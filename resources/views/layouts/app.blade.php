@@ -213,7 +213,7 @@
                         <img src="{{ asset('images/swa-logo.png') }}" alt="SWA Logo" class="h-10 w-10 object-contain">
                     </div>
                     <div class="ml-3">
-                        <h1 class="text-white font-bold text-base leading-tight tracking-wide">SIRADIN</h1>
+                        <h1 class="text-white font-bold text-base leading-tight tracking-wide">SIREKADIN</h1>
                         <p class="text-blue-200/75 text-xs font-medium tracking-wider">Sistem Kendaraan</p>
                     </div>
                 </div>
@@ -443,7 +443,7 @@
                             <img src="{{ asset('images/swa-logo.png') }}" alt="SWA Logo" class="h-8 w-8 object-contain">
                         </div>
                         <div>
-                            <h1 class="text-white font-bold text-sm leading-tight">SIRADIN</h1>
+                            <h1 class="text-white font-bold text-sm leading-tight">SIREKADIN</h1>
                             <p class="text-xs" style="color:rgba(186,230,253,0.75);">Sistem Kendaraan</p>
                         </div>
                     </div>

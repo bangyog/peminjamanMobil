@@ -80,11 +80,5 @@
         </div>
     </form>
 
-    <!-- Demo Credentials (Remove in production)
-    <div class="mt-6 p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
-        <p class="text-xs text-white font-semibold mb-2">🔑 Demo Login:</p>
-        <p class="text-xs text-blue-100">Admin: <span class="font-mono text-white">admin.ga@company.com</span></p>
-        <p class="text-xs text-blue-100">User: <span class="font-mono text-white">siti@company.com</span></p>
-        <p class="text-xs text-blue-100 mt-1">Password: <span class="font-mono text-white">password</span></p>
-    </div> -->
+
 </x-guest-layout>
