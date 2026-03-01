@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'SIRADIN') }}</title>
+    <title>{{ config('app.name', 'SIREKADIN') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -196,7 +196,7 @@
             {{-- Badge --}}
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full badge-pill mt-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
-                <span class="text-sky-300 text-xs font-bold tracking-widest uppercase">SIRADIN</span>
+                <span class="text-sky-300 text-xs font-bold tracking-widest uppercase">SIREKADIN</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
             </div>
 
