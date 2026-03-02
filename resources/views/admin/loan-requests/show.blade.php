@@ -2,16 +2,16 @@
     <x-slot name="header">Detail Pengajuan</x-slot>
 
     @php
-        $statusConfig = [
-            'submitted'       => ['label' => 'Menunggu Persetujuan',  'icon' => '⏳', 'bg' => '#fffbeb', 'border' => '#fde68a', 'text' => '#92400e', 'dot' => 'bg-yellow-400'],
-            'approved_kepala' => ['label' => 'Disetujui Kepala',       'icon' => '✅', 'bg' => '#eff6ff', 'border' => '#bfdbfe', 'text' => '#1e40af', 'dot' => 'bg-blue-400'],
-            'approved_ga'     => ['label' => 'Disetujui GA',           'icon' => '✅', 'bg' => '#eef2ff', 'border' => '#c7d2fe', 'text' => '#3730a3', 'dot' => 'bg-indigo-400'],
-            'assigned'        => ['label' => 'Kendaraan Ditugaskan',   'icon' => '🚗', 'bg' => '#faf5ff', 'border' => '#ddd6fe', 'text' => '#5b21b6', 'dot' => 'bg-purple-400'],
-            'in_use'          => ['label' => 'Sedang Digunakan',       'icon' => '🚦', 'bg' => '#f0fdf4', 'border' => '#bbf7d0', 'text' => '#15803d', 'dot' => 'bg-green-400'],
-            'returned'        => ['label' => 'Sudah Dikembalikan',     'icon' => '🏁', 'bg' => '#f8fafc', 'border' => '#e2e8f0', 'text' => '#475569', 'dot' => 'bg-slate-400'],
-            'rejected'        => ['label' => 'Ditolak',                'icon' => '❌', 'bg' => '#fef2f2', 'border' => '#fecaca', 'text' => '#991b1b', 'dot' => 'bg-red-400'],
-        ];
-        $sc = $statusConfig[$loanRequest->status] ?? ['label' => strtoupper($loanRequest->status), 'icon' => '📋', 'bg' => '#f8fafc', 'border' => '#e2e8f0', 'text' => '#475569', 'dot' => 'bg-gray-400'];
+    $statusConfig = [
+    'submitted' => ['label' => 'Menunggu Persetujuan', 'icon' => '⏳', 'bg' => '#fffbeb', 'border' => '#fde68a', 'text' => '#92400e', 'dot' => 'bg-yellow-400'],
+    'approved_kepala' => ['label' => 'Disetujui Kepala', 'icon' => '✅', 'bg' => '#eff6ff', 'border' => '#bfdbfe', 'text' => '#1e40af', 'dot' => 'bg-blue-400'],
+    'approved_ga' => ['label' => 'Disetujui GA', 'icon' => '✅', 'bg' => '#eef2ff', 'border' => '#c7d2fe', 'text' => '#3730a3', 'dot' => 'bg-indigo-400'],
+    'assigned' => ['label' => 'Kendaraan Ditugaskan', 'icon' => '🚗', 'bg' => '#faf5ff', 'border' => '#ddd6fe', 'text' => '#5b21b6', 'dot' => 'bg-purple-400'],
+    'in_use' => ['label' => 'Sedang Digunakan', 'icon' => '🚦', 'bg' => '#f0fdf4', 'border' => '#bbf7d0', 'text' => '#15803d', 'dot' => 'bg-green-400'],
+    'returned' => ['label' => 'Sudah Dikembalikan', 'icon' => '🏁', 'bg' => '#f8fafc', 'border' => '#e2e8f0', 'text' => '#475569', 'dot' => 'bg-slate-400'],
+    'rejected' => ['label' => 'Ditolak', 'icon' => '❌', 'bg' => '#fef2f2', 'border' => '#fecaca', 'text' => '#991b1b', 'dot' => 'bg-red-400'],
+    ];
+    $sc = $statusConfig[$loanRequest->status] ?? ['label' => strtoupper($loanRequest->status), 'icon' => '📋', 'bg' => '#f8fafc', 'border' => '#e2e8f0', 'text' => '#475569', 'dot' => 'bg-gray-400'];
     @endphp
 
     {{-- ===== PAGE HERO BAR ===== --}}
@@ -41,7 +41,7 @@
                 onmouseover="this.style.background='#e2e8f0';"
                 onmouseout="this.style.background='#f1f5f9';">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
                 Kembali
             </a>
@@ -123,7 +123,7 @@
                             <p class="text-sm text-gray-600 font-semibold">Tujuan:</p>
                             <p class="text-gray-800 border-b border-gray-300 pb-2">{{ $loanRequest->destination ?? '-' }}</p>
                         </div>
-                                                <div class="mb-4">
+                        <div class="mb-4">
                             <p class="text-sm text-gray-600 font-semibold">Projek:</p>
                             <p class="text-gray-800 border-b border-gray-300 pb-2">{{ $loanRequest->projek ?? '-' }}</p>
                         </div>
@@ -451,11 +451,13 @@
                                     <strong>Perhatian:</strong> Pengajuan yang ditolak tidak dapat diubah.
                                 </p>
                             </div>
-                            <button type="submit"
-                                onclick="return confirm('Yakin ingin menolak pengajuan ini?')"
+                            {{-- Ganti jadi trigger modal --}}
+                            <button type="button"
+                                onclick="openRejectModal()"
                                 class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg transition text-lg">
                                 ❌ Tolak Pengajuan
                             </button>
+
                         </form>
                     </div>
                 </div>
@@ -582,4 +584,126 @@
         });
     </script>
     @endif
+
+    {{-- ===== MODAL KONFIRMASI REJECT ===== --}}
+    <div id="rejectModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center"
+        style="background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);">
+
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden
+                transform transition-all duration-300 scale-95 opacity-0"
+            id="rejectModalBox">
+
+            {{-- Header merah --}}
+            <div class="bg-gradient-to-r from-red-600 to-red-500 px-6 py-5 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-white font-extrabold text-lg leading-tight">Tolak Pengajuan?</h3>
+                    <p class="text-red-100 text-xs mt-0.5">Tindakan ini tidak dapat dibatalkan</p>
+                </div>
+            </div>
+
+            {{-- Body --}}
+            <div class="px-6 py-5">
+                {{-- Warning box --}}
+                <div class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+                    <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <div class="text-sm text-red-700">
+                        <p class="font-semibold mb-1">Perhatian!</p>
+                        <ul class="list-disc list-inside space-y-0.5 text-xs">
+                            <li>Pengajuan akan berstatus <strong>Ditolak</strong></li>
+                            <li>Pemohon akan mendapat notifikasi penolakan</li>
+                            <li>Status tidak bisa diubah setelah ditolak</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- Info pemohon --}}
+                <div class="bg-gray-50 rounded-xl px-4 py-3 mb-2 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-sm flex-shrink-0">
+                        {{ strtoupper(substr($loanRequest->requester->full_name ?? 'U', 0, 1)) }}
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Pemohon</p>
+                        <p class="text-sm font-semibold text-gray-800">{{ $loanRequest->requester->full_name ?? '-' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Footer tombol --}}
+            <div class="px-6 pb-6 flex gap-3">
+                <button type="button" onclick="closeRejectModal()"
+                    class="flex-1 px-4 py-3 rounded-xl font-semibold text-sm transition-all
+                       bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200">
+                    Batal
+                </button>
+                <button type="button" onclick="submitRejectForm()"
+                    class="flex-1 px-4 py-3 rounded-xl font-bold text-sm transition-all
+                       bg-red-600 hover:bg-red-700 active:scale-95 text-white shadow-lg shadow-red-200
+                       flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Ya, Tolak Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openRejectModal() {
+            const modal = document.getElementById('rejectModal');
+            const modalBox = document.getElementById('rejectModalBox');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // animasi masuk
+            setTimeout(() => {
+                modalBox.classList.remove('scale-95', 'opacity-0');
+                modalBox.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeRejectModal() {
+            const modal = document.getElementById('rejectModal');
+            const modalBox = document.getElementById('rejectModalBox');
+            modalBox.classList.remove('scale-100', 'opacity-100');
+            modalBox.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
+        }
+
+        function submitRejectForm() {
+            // Validasi alasan diisi dulu
+            const reason = document.querySelector('textarea[name="rejection_reason"]');
+            if (!reason || reason.value.trim() === '') {
+                closeRejectModal();
+                reason.focus();
+                reason.classList.add('border-red-500', 'ring-2', 'ring-red-300');
+                reason.placeholder = '⚠️ Alasan wajib diisi sebelum menolak!';
+                return;
+            }
+            reason.closest('form').submit();
+        }
+
+        // Klik di luar modal = tutup
+        document.getElementById('rejectModal').addEventListener('click', function(e) {
+            if (e.target === this) closeRejectModal();
+        });
+
+        // ESC = tutup
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeRejectModal();
+        });
+    </script>
+
 </x-app-layout>

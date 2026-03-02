@@ -23,6 +23,10 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/logout', function () {
+    return redirect()->route('login')->with('logout_warning', true);
+});
+
 /*
 |--------------------------------------------------------------------------
 | SEMUA USER AUTHENTICATED
