@@ -146,7 +146,7 @@
                             </div>
                         </div>
 
-                        <!-- anggaran awal -->
+                        <!-- anggaran awal
                         <div class="mt-6">
                             <label for="anggaran_awal" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Anggaran Awal <span class="text-red-500">*</span>
@@ -158,6 +158,36 @@
                             @error('anggaran_awal')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
+                        </div> -->
+
+                        <!-- driver -->
+                        <div class="mt-6">
+                            <label for="driver" class="inline-flex items-center gap-4 cursor-pointer group">
+                                <!-- Toggle Switch -->
+                                <div class="relative">
+                                    <input type="checkbox" name="driver" id="driver" value="1"
+                                        {{ old('driver') ? 'checked' : '' }}
+                                        class="sr-only peer">
+                                    <div class="w-12 h-6 bg-gray-200 rounded-full peer 
+                        peer-checked:bg-blue-600 
+                        peer-focus:ring-2 peer-focus:ring-blue-400 peer-focus:ring-offset-2
+                        transition-colors duration-300 ease-in-out
+                        group-hover:bg-gray-300 peer-checked:group-hover:bg-blue-700">
+                                    </div>
+                                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md
+                        peer-checked:translate-x-6
+                        transition-transform duration-300 ease-in-out">
+                                    </div>
+                                </div>
+
+                                <!-- Label & Description -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-semibold text-gray-700 group-hover:text-blue-600 transition-colors duration-200">
+                                        Butuh Driver?
+                                    </span>
+                                    <span class="text-xs text-gray-400">Aktifkan jika membutuhkan driver</span>
+                                </div>
+                            </label>
                         </div>
 
                         <!-- Kendaraan -->
@@ -212,13 +242,12 @@
                                         placeholder="Contoh: Kantor Pusat">
                                 </div>
                                 <div>
-                                    {{-- ✅ FIX BUG 1: departure_date bukan depart_at --}}
                                     <label for="depart_at" class="block text-sm font-semibold text-gray-700 mb-2">
                                         Tanggal & Jam <span class="text-red-500">*</span>
                                     </label>
                                     <input type="datetime-local" name="depart_at" id="depart_at" required
                                         value="{{ old('depart_at') }}"
-                                        min="{{ now()->format('Y-m-d\TH:i') }}"
+                                        min="{{ now()->addDay()->format('Y-m-d') }}T00:00"
                                         class="w-full px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white transition @error('depart_at') border-red-400 @enderror">
                                     @error('depart_at')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -246,12 +275,12 @@
                                         placeholder="Contoh: Kantor Pusat">
                                 </div>
                                 <div>
-                                    {{-- ✅ FIX BUG 2: return_date bukan expected_return_at --}}
                                     <label for="expected_return_at" class="block text-sm font-semibold text-gray-700 mb-2">
                                         Tanggal & Jam <span class="text-red-500">*</span>
                                     </label>
                                     <input type="datetime-local" name="expected_return_at" id="expected_return_at" required
                                         value="{{ old('expected_return_at') }}"
+                                        min="{{ now()->addDay()->format('Y-m-d') }}T00:00"
                                         class="w-full px-4 py-3 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 bg-white transition @error('expected_return_at') border-red-400 @enderror">
                                     @error('expected_return_at')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -260,6 +289,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Catatan -->
                     <div class="border-2 border-gray-200 rounded-xl p-6 mb-6 hover:border-yellow-300 transition">
@@ -485,6 +515,19 @@
                 `;
                 submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
             });
+        });
+
+        // Validasi tambahan: expected_return_at tidak boleh sebelum depart_at
+        document.getElementById('depart_at').addEventListener('change', function() {
+            const departVal = this.value;
+            const returnInput = document.getElementById('expected_return_at');
+            if (departVal) {
+                returnInput.min = departVal;
+                // Reset nilai return jika lebih awal dari keberangkatan
+                if (returnInput.value && returnInput.value < departVal) {
+                    returnInput.value = '';
+                }
+            }
         });
     </script>
 

@@ -58,63 +58,45 @@ class ReturnController extends Controller
         }
 
         $request->validate([
-            'returned_at'            => 'required|date',
-            'odometer_km_end'        => 'required|integer|min:0',
-            'anggaran_digunakan'          => 'nullable|numeric|min:0',
-            'return_note'            => 'nullable|string|max:1000',
-            'expenses'               => 'nullable|array',
-            'expenses.*.type'        => 'nullable|in:fuel,toll,parking,repair,other',
-            'expenses.*.amount'      => 'nullable|numeric|min:0',
-            'expenses.*.description' => 'nullable|string|max:255',
-            'expenses.*.receipt'     => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'returned_at'       => 'required|date',
+            'odometer_km_end'   => 'required|integer|min:0',
+            'vehicle_condition' => 'required|in:good,minor_damage,major_damage,needs_maintenance', // ✅ BARU
+            'condition_notes'   => 'nullable|string|max:1000',                                     // ✅ BARU (ganti return_note)
+            'attachments'       => 'nullable|array|max:5',                                         // ✅ BARU
+            'attachments.*'     => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',               // ✅ BARU
+        ], [
+            'vehicle_condition.required' => 'Kondisi kendaraan harus dipilih',
+            'vehicle_condition.in'       => 'Kondisi kendaraan tidak valid',
+            'odometer_km_end.required'   => 'Odometer harus diisi',
+            'returned_at.required'       => 'Tanggal pengembalian harus diisi',
         ]);
 
         DB::transaction(function () use ($request, $loanRequest, $user) {
 
-            // ✅ Step 1: Insert ke tabel returns
+            // ✅ Step 1: Simpan data pengembalian
             $vehicleReturn = VehicleReturn::create([
-                'loan_request_id' => $loanRequest->id,
-                'returned_at'     => $request->returned_at,
-                'odometer_km_end' => $request->odometer_km_end,
-                'anggaran_digunakan'   => $request->anggaran_digunakan,
-                'return_note'     => $request->return_note,
+                'loan_request_id'   => $loanRequest->id,
+                'returned_at'       => $request->returned_at,
+                'odometer_km_end'   => $request->odometer_km_end,
+                'vehicle_condition' => $request->vehicle_condition, // ✅ BARU
+                'return_note'       => $request->condition_notes,   // ✅ condition_notes → return_note
             ]);
 
-            // ✅ Step 2: Insert expenses + file receipt
-            // Harus dipisah: input() untuk text, file() untuk file
-            $expensesData  = $request->input('expenses', []);
-            $expensesFiles = $request->file('expenses', []);
+            // ✅ Step 2: Upload lampiran foto/dokumen (jika ada)
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('return-attachments', 'public');
 
-            foreach ($expensesData as $index => $expense) {
-                if (empty($expense['amount'])) continue;
-
-                // ✅ Upload receipt jika ada
-                $receiptPath = null;
-                if (isset($expensesFiles[$index]['receipt'])) {
-                    $file        = $expensesFiles[$index]['receipt'];
-                    $receiptPath = $file->store('return-receipts', 'public');
-
-                    // ✅ Insert juga ke return_attachments
                     ReturnAttachment::create([
                         'return_id'       => $vehicleReturn->id,
-                        'type'            => 'expense_receipt',
+                        'type'            => 'return_proof',
                         'file_name'       => $file->getClientOriginalName(),
-                        'file_url'        => $receiptPath,
+                        'file_url'        => $path,
                         'mime_type'       => $file->getMimeType(),
                         'file_size_bytes' => $file->getSize(),
                         'uploaded_by'     => $user->id,
                     ]);
                 }
-
-                // ✅ Insert ke return_expenses
-                ReturnExpense::create([
-                    'return_id'   => $vehicleReturn->id,
-                    'type'        => $expense['type'] ?? 'other',
-                    'description' => $expense['description'] ?? null,
-                    'amount'      => $expense['amount'],
-                    'receipt_url' => $receiptPath,
-                    'created_by'  => $user->id,
-                ]);
             }
 
             // ✅ Step 3: Update status loan_request

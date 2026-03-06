@@ -106,6 +106,7 @@ class LoanRequestController extends Controller
             'depart_at'              => 'required|date',
             'expected_return_at'     => 'required|date|after:depart_at',
             'notes'                  => 'nullable|string|max:1000',
+            'driver'                 => 'nullable|boolean',
             'requester_signature'    => 'nullable|string',
             'attachments.*'          => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
         ]);
@@ -137,6 +138,7 @@ class LoanRequestController extends Controller
                 'kembali_di'             => $request->kembali_di,
                 'requested_vehicle_text' => $request->requested_vehicle_text,
                 'notes'                  => $request->notes,
+                'driver'                 => $request->driver,
                 'requester_signature'    => $signaturePath,
                 'depart_at'              => $request->depart_at,
                 'expected_return_at'     => $request->expected_return_at,
@@ -282,6 +284,7 @@ class LoanRequestController extends Controller
             'depart_at'              => 'required|date',
             'expected_return_at'     => 'required|date|after:depart_at',
             'notes'                  => 'nullable|string|max:1000',
+            'driver'                 => 'nullable|boolean',
             'requester_signature'    => 'nullable|string',
             'attachments.*'          => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
         ]);
@@ -300,6 +303,7 @@ class LoanRequestController extends Controller
                 'kembali_di'             => $request->kembali_di,
                 'requested_vehicle_text' => $request->requested_vehicle_text,
                 'notes'                  => $request->notes,
+                'driver'                 => $request->driver,
                 'depart_at'              => $request->depart_at,
                 'expected_return_at'     => $request->expected_return_at,
             ];

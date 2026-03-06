@@ -128,12 +128,12 @@
                             <p class="text-gray-800 border-b border-gray-300 pb-2">{{ $loanRequest->projek ?? '-' }}</p>
                         </div>
 
-                        <div class="mb-4">
+                        <!-- <div class="mb-4">
                             <p class="text-sm text-gray-600 font-semibold">Anggaran Awal:</p>
                             <p class="text-gray-800 border-b border-gray-300 pb-2">
                                 {{ $loanRequest->anggaran_awal ? 'Rp ' . number_format($loanRequest->anggaran_awal, 0, ',', '.') : '-' }}
                             </p>
-                        </div>
+                        </div> -->
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <p class="text-sm text-gray-600 font-semibold">Kendaraan yang Diminta:</p>
@@ -342,15 +342,25 @@
                     </div>
                     @endif
 
-                    {{-- Action Buttons --}}
-                    <div class="flex justify-between items-center pt-6 border-t">
-                        <a href="{{ route('admin.loan-requests.index') }}"
-                            class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
-                            ← Kembali
-                        </a>
-                    </div>
-                </div>
-            </div>
+{{-- Action Buttons --}}
+<div class="flex justify-between items-center pt-6 border-t">
+    <a href="{{ route('admin.loan-requests.index') }}"
+       class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
+        ← Kembali
+    </a>
+
+    {{-- Download PDF --}}
+    <a href="{{ route('loan-requests.pdf', $loanRequest) }}"
+       class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-white rounded-xl transition"
+       style="background:linear-gradient(135deg,#dc2626,#ef4444);">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Download PDF
+    </a>
+</div>
+
 
             {{-- APPROVAL SECTION --}}
             @if(in_array($loanRequest->status, ['approved_kepala', 'approved_ga']))
@@ -382,6 +392,51 @@
                             method="POST" id="approveForm">
                             @csrf
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- driver -->
+                                @if($loanRequest->driver)
+                                {{-- User minta driver → admin wajib isi --}}
+                                <div class="p-4 mb-4 rounded-3 border border-2 border-primary-subtle bg-primary-subtle d-flex align-items-start gap-3">
+                                    <div class="fs-4 text-primary mt-1">
+                                        <i class="bi bi-person-fill-check"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold text-primary">Pemohon Membutuhkan Driver</div>
+                                        <div class="text-muted small">Silakan tentukan driver yang akan ditugaskan di bawah ini.</div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold text-secondary small text-uppercase tracking-wide">
+                                        Nama Driver <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="bi bi-person-badge text-primary"></i>
+                                        </span>
+                                        <input type="text"
+                                            name="assigned_driver_name"
+                                            class="form-control border-start-0 ps-0"
+                                            placeholder="Masukkan nama driver"
+                                            required
+                                            value="{{ old('assigned_driver_name', $assignment->assigned_driver_name ?? '') }}">
+                                    </div>
+                                </div>
+
+                                @else
+                                {{-- User self-drive → otomatis, tidak perlu input driver --}}
+                                <div class="p-4 mb-4 rounded-3 border border-2 border-secondary-subtle bg-secondary-subtle d-flex align-items-start gap-3">
+                                    <div class="fs-4 text-secondary mt-1">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold text-secondary">Pemohon Akan Mengemudi Sendiri</div>
+                                        <div class="text-muted small">Tidak diperlukan penugasan driver — kendaraan digunakan secara <em>self-drive</em>.</div>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="assigned_driver_name" value="Self-drive">
+                                @endif
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         Pilih Kendaraan <span class="text-red-500">*</span>

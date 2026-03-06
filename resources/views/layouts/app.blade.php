@@ -262,10 +262,10 @@
                         </svg>
                         Units
                     </a>
-                    <a href="{{ route('admin.monitoring.expenses') }}" class="nav-link flex items-center px-4 py-2.5 text-white/90 rounded-xl text-sm font-medium {{ request()->routeIs('admin.monitoring.*') ? 'active' : '' }}">
+                    <!-- <a href="{{ route('admin.monitoring.expenses') }}" class="nav-link flex items-center px-4 py-2.5 text-white/90 rounded-xl text-sm font-medium {{ request()->routeIs('admin.monitoring.*') ? 'active' : '' }}">
                         <svg class="nav-icon w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Monitoring Biaya
-                    </a>
+                    </a> -->
 
                     {{-- ✅ KEPALA DEPARTEMEN --}}
                     @elseif($user->isKepalaDepartemen())
@@ -484,10 +484,10 @@
                         <svg class="nav-icon w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         Units
                     </a>
-                    <a href="{{ route('admin.monitoring.expenses') }}" class="nav-link flex items-center px-4 py-2.5 text-white/90 rounded-xl text-sm font-medium {{ request()->routeIs('admin.monitoring.*') ? 'active' : '' }}">
+                    <!-- <a href="{{ route('admin.monitoring.expenses') }}" class="nav-link flex items-center px-4 py-2.5 text-white/90 rounded-xl text-sm font-medium {{ request()->routeIs('admin.monitoring.*') ? 'active' : '' }}">
                         <svg class="nav-icon w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Monitoring Biaya
-                    </a>
+                    </a> -->
 
                     @elseif($user->isKepalaDepartemen())
                     <a href="{{ route('dashboard') }}" class="nav-link flex items-center px-4 py-2.5 text-white/90 rounded-xl text-sm font-medium {{ request()->routeIs('dashboard') ? 'active' : '' }}">

@@ -175,7 +175,7 @@ Route::middleware(['auth', 'role:admin_ga,kepala_departemen,admin_akuntansi'])
                 ->name('index');
             Route::get('/{return}', [AdminReturnController::class, 'show'])
                 ->name('show');
-            Route::patch('/{return}/process', [AdminReturnController::class, 'process'])
+            Route::post('/{return}/process', [AdminReturnController::class, 'process'])
                 ->name('process');
         });
 

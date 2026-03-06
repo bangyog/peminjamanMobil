@@ -31,6 +31,7 @@ class LoanRequest extends Model
         'kembali_di',
         'requested_vehicle_text',
         'notes',
+        'driver',
         'requester_signature',
         'kepala_signature',
         'approver_signature',
@@ -42,6 +43,7 @@ class LoanRequest extends Model
     protected $casts = [
         'depart_at' => 'datetime',
         'expected_return_at' => 'datetime',
+        'driver' => 'boolean',
     ];
 
     // ==================== RELATIONSHIPS ====================

@@ -8,32 +8,34 @@
         style="background:#f0fdf4; border:1.5px solid #86efac; color:#15803d;">
         <div class="flex items-center gap-2">
             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             {{ session('success') }}
         </div>
         <button @click="show = false" class="text-green-400 hover:text-green-700 transition flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
     </div>
     @endif
 
-    {{-- ===== PAGE HERO BAR ===== --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+    {{-- Ganti seluruh PAGE HERO BAR --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
         <div>
-            <h1 class="text-xl font-extrabold text-gray-800 leading-tight">Dashboard Admin GA</h1>
-            <p class="text-sm text-gray-400 mt-0.5">
+            <h1 class="text-lg sm:text-xl font-extrabold text-gray-800 leading-tight">Dashboard Admin GA</h1>
+            <p class="text-xs sm:text-sm text-gray-400 mt-0.5">
                 Selamat datang, <span class="font-semibold text-gray-600">{{ Auth::user()->full_name }}</span>
             </p>
         </div>
-        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0"
+        {{-- Tanggal tampil di mobile di sini --}}
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full self-start sm:self-auto"
             style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;">
             <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
-            {{ now()->translatedFormat('l, d F Y') }}
+            {{ now()->translatedFormat('D, d M Y · H:i') }} WIB
         </span>
     </div>
+
 
     {{-- ========================= STATS UTAMA ========================= --}}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -49,7 +51,7 @@
                 </div>
                 <div class="p-3 rounded-xl" style="background:linear-gradient(135deg,#fef9c3,#fef08a);">
                     <svg class="w-7 h-7 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
             </div>
@@ -73,7 +75,7 @@
                 </div>
                 <div class="p-3 rounded-xl" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);">
                     <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                 </div>
             </div>
@@ -90,7 +92,7 @@
                 </div>
                 <div class="p-3 rounded-xl" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);">
                     <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
             </div>
@@ -106,7 +108,7 @@
                 <div class="w-7 h-7 rounded-lg flex items-center justify-center"
                     style="background:linear-gradient(135deg,#1e1b4b,#3730a3);">
                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
                 <h3 class="text-sm font-extrabold text-gray-700">Status Armada Kendaraan</h3>
@@ -118,19 +120,19 @@
                 onmouseout="this.style.background='#eff6ff'; this.style.color='#1d4ed8'; this.style.borderColor='#bfdbfe';">
                 Kelola Armada
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                 </svg>
             </a>
         </div>
 
         @php
-            $totalVehicles = ($vehicleStats['available'] + $vehicleStats['in_use'] + $vehicleStats['maintenance'] + $vehicleStats['retired']) ?: 1;
-            $armadaConfig = [
-                ['label' => 'Tersedia',     'key' => 'available',    'icon' => '✅', 'bg' => '#f0fdf4', 'border' => '#86efac', 'text' => '#15803d', 'bar' => '#22c55e'],
-                ['label' => 'Digunakan',    'key' => 'in_use',       'icon' => '🔄', 'bg' => '#eff6ff', 'border' => '#93c5fd', 'text' => '#1d4ed8', 'bar' => '#3b82f6'],
-                ['label' => 'Maintenance',  'key' => 'maintenance',  'icon' => '🔧', 'bg' => '#fffbeb', 'border' => '#fde68a', 'text' => '#92400e', 'bar' => '#f59e0b'],
-                ['label' => 'Pensiunan',    'key' => 'retired',      'icon' => '🚫', 'bg' => '#f8fafc', 'border' => '#e2e8f0', 'text' => '#475569', 'bar' => '#94a3b8'],
-            ];
+        $totalVehicles = ($vehicleStats['available'] + $vehicleStats['in_use'] + $vehicleStats['maintenance'] + $vehicleStats['retired']) ?: 1;
+        $armadaConfig = [
+        ['label' => 'Tersedia', 'key' => 'available', 'icon' => '✅', 'bg' => '#f0fdf4', 'border' => '#86efac', 'text' => '#15803d', 'bar' => '#22c55e'],
+        ['label' => 'Digunakan', 'key' => 'in_use', 'icon' => '🔄', 'bg' => '#eff6ff', 'border' => '#93c5fd', 'text' => '#1d4ed8', 'bar' => '#3b82f6'],
+        ['label' => 'Maintenance', 'key' => 'maintenance', 'icon' => '🔧', 'bg' => '#fffbeb', 'border' => '#fde68a', 'text' => '#92400e', 'bar' => '#f59e0b'],
+        ['label' => 'Pensiunan', 'key' => 'retired', 'icon' => '🚫', 'bg' => '#f8fafc', 'border' => '#e2e8f0', 'text' => '#475569', 'bar' => '#94a3b8'],
+        ];
         @endphp
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -165,7 +167,7 @@
                     <div class="w-8 h-8 rounded-xl flex items-center justify-center"
                         style="background:linear-gradient(135deg,#6d28d9,#7c3aed);">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                         </svg>
                     </div>
                     <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-purple-400 animate-ping"></span>
@@ -221,7 +223,7 @@
                                 onmouseover="this.style.boxShadow='0 5px 16px rgba(109,40,217,0.45)'; this.style.transform='translateY(-1px)';"
                                 onmouseout="this.style.boxShadow='0 3px 10px rgba(109,40,217,0.3)'; this.style.transform='translateY(0)';">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                 </svg>
                                 Tugaskan Kendaraan
                             </a>
@@ -271,7 +273,7 @@
                 <div class="w-7 h-7 rounded-lg flex items-center justify-center"
                     style="background:linear-gradient(135deg,#0052A3,#0066CC);">
                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                 </div>
                 <h3 class="text-sm font-extrabold text-gray-700">Pengajuan Masuk Terbaru</h3>
@@ -285,7 +287,7 @@
                 onmouseout="this.style.background='#eff6ff'; this.style.color='#1d4ed8'; this.style.borderColor='#bfdbfe';">
                 Lihat Semua
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                 </svg>
             </a>
         </div>
@@ -328,7 +330,7 @@
                                 onmouseout="this.style.background='#eff6ff'; this.style.color='#1d4ed8';">
                                 Detail
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                                 </svg>
                             </a>
                         </td>
@@ -350,7 +352,7 @@
                     <p class="text-xs text-gray-600 mt-1 truncate">{{ Str::limit($req->purpose, 45) }}</p>
                 </div>
                 <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </a>
             @endforeach
@@ -361,7 +363,7 @@
             <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-3"
                 style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">
                 <svg class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
             </div>
             <p class="text-sm font-bold text-gray-400">Tidak ada pengajuan masuk</p>
@@ -380,7 +382,7 @@
                 <div class="w-7 h-7 rounded-lg flex items-center justify-center"
                     style="background:linear-gradient(135deg,#1d4ed8,#2563eb);">
                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
                 <h3 class="text-sm font-extrabold text-blue-900">Peminjaman Aktif</h3>
@@ -446,7 +448,7 @@
                                 onmouseout="this.style.background='#eff6ff'; this.style.color='#1d4ed8';">
                                 Detail
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                                 </svg>
                             </a>
                         </td>
@@ -481,7 +483,7 @@
                     </p>
                 </div>
                 <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </a>
             @endforeach

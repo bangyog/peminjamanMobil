@@ -58,7 +58,7 @@ class ReturnController extends Controller
             'loanRequest.unit',
             'loanRequest.assignment.assignedVehicle',
             'receivedBy',
-            'expenses',
+            
         ]);
 
         if ($request->filled('search')) {
@@ -115,7 +115,7 @@ class ReturnController extends Controller
             'loanRequest.assignment.assignedVehicle',
             'loanRequest.approvals.approver',
             'receivedBy',
-            'expenses',
+            
             'attachments',
         ]);
 
@@ -125,65 +125,86 @@ class ReturnController extends Controller
     // ============================================================
     // PROCESS — Admin GA konfirmasi pengembalian dari user
     // ============================================================
-    public function process(VehicleReturn $return)
-    {
-        $user = $this->getAuthUser();
+   public function process(VehicleReturn $return)
+{
+    $user = $this->getAuthUser();
 
-        if (!$user->isAdminGA()) {
-            abort(403, 'Hanya Admin GA yang dapat memproses pengembalian.');
-        }
-
-        if (!is_null($return->received_by)) {
-            return back()->with('error', 'Pengembalian ini sudah pernah diproses.');
-        }
-
-        $return->load('loanRequest.requester', 'loanRequest.assignment.assignedVehicle', 'loanRequest.statusLogs');
-        $loanRequest = $return->loanRequest;
-
-        DB::beginTransaction();
-        try {
-            $return->update(['received_by' => $user->id]);
-
-            if ($loanRequest?->assignment?->assignedVehicle) {
-                $loanRequest->assignment->assignedVehicle
-                    ->update(['status' => 'available']);
-            }
-
-            if ($loanRequest) {
-                $loanRequest->statusLogs()->create([
-                    'from_status' => 'returned',
-                    'to_status'   => 'returned',
-                    'changed_by'  => $user->id,
-                    'change_note' => 'Pengembalian dikonfirmasi oleh Admin GA. Kendaraan kini tersedia.',
-                    'changed_at'  => now(),
-                ]);
-            }
-
-            DB::commit();
-
-            // ✅ Notif requester — sudah di tempat yang benar (setelah commit)
-            if ($loanRequest?->requester) {
-                $this->sendNotification(
-                    $loanRequest->requester,
-                    'Pengembalian Dikonfirmasi',
-                    'Pengembalian kendaraan untuk peminjaman #' . $return->loan_request_id . ' telah dikonfirmasi oleh Admin GA.',
-                    route('loan-requests.show', $loanRequest),
-                    'success'
-                );
-            }
-
-            return redirect()
-                ->route('admin.returns.show', $return)
-                ->with('success', 'Pengembalian berhasil dikonfirmasi. Kendaraan kini tersedia.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Admin\ReturnController@process error', [
-                'message'   => $e->getMessage(),
-                'return_id' => $return->id,
-                'user_id'   => $user->id,
-            ]);
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+    if (!$user->isAdminGA()) {
+        abort(403, 'Hanya Admin GA yang dapat memproses pengembalian.');
     }
+
+    if (!is_null($return->received_by)) {
+        return back()->with('error', 'Pengembalian ini sudah pernah diproses.');
+    }
+
+    $return->load('loanRequest.requester', 'loanRequest.assignment.assignedVehicle', 'loanRequest.statusLogs');
+    $loanRequest = $return->loanRequest;
+
+    DB::beginTransaction();
+    try {
+        $return->update(['received_by' => $user->id]);
+
+        // ✅ Status kendaraan dinamis berdasarkan vehicle_condition
+        if ($loanRequest?->assignment?->assignedVehicle) {
+            $vehicleStatus = match ($return->vehicle_condition) {
+                'good'              => 'available',
+                'minor_damage'      => 'maintenance',
+                'major_damage'      => 'maintenance',
+                'needs_maintenance' => 'maintenance',
+                default             => 'available',
+            };
+
+            $loanRequest->assignment->assignedVehicle
+                ->update(['status' => $vehicleStatus]);
+        }
+
+        // ✅ Label kondisi untuk catatan & notifikasi
+        $conditionLabel = match ($return->vehicle_condition) {
+            'good'              => 'Baik',
+            'minor_damage'      => 'Kerusakan Ringan',
+            'major_damage'      => 'Kerusakan Berat',
+            'needs_maintenance' => 'Perlu Servis',
+            default             => '-',
+        };
+
+        if ($loanRequest) {
+            $loanRequest->statusLogs()->create([
+                'from_status' => 'returned',
+                'to_status'   => 'returned',
+                'changed_by'  => $user->id,
+                'change_note' => 'Pengembalian dikonfirmasi oleh Admin GA. Kondisi kendaraan: ' . $conditionLabel
+                    . ($return->return_note ? '. Catatan: ' . $return->return_note : ''),
+                'changed_at'  => now(),
+            ]);
+        }
+
+        DB::commit();
+
+        // ✅ Notif requester dengan info kondisi kendaraan
+        if ($loanRequest?->requester) {
+            $this->sendNotification(
+                $loanRequest->requester,
+                'Pengembalian Dikonfirmasi',
+                'Pengembalian kendaraan untuk peminjaman #' . $return->loan_request_id
+                    . ' telah dikonfirmasi Admin GA. Kondisi kendaraan: ' . $conditionLabel . '.',
+                route('loan-requests.show', $loanRequest),
+                'success'
+            );
+        }
+
+        return redirect()
+            ->route('admin.returns.show', $return)
+            ->with('success', 'Pengembalian berhasil dikonfirmasi. Kondisi kendaraan: ' . $conditionLabel . '.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Admin\ReturnController@process error', [
+            'message'   => $e->getMessage(),
+            'return_id' => $return->id,
+            'user_id'   => $user->id,
+        ]);
+        return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+    }
+}
+
 }

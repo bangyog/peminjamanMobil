@@ -100,10 +100,10 @@
                             <p class="text-xs font-bold text-blue-400 uppercase tracking-wide mb-1">Tujuan</p>
                             <p class="text-sm text-gray-700">{{ $loanRequest->destination ?? '-' }}</p>
                         </div>
-                        <div class="rounded-xl p-3.5" style="background:#fafbff; border:1px solid #e8f0fe;">
+                        <!-- <div class="rounded-xl p-3.5" style="background:#fafbff; border:1px solid #e8f0fe;">
                             <p class="text-xs font-bold text-blue-400 uppercase tracking-wide mb-1">Anggaran</p>
                             <p class="text-sm text-gray-700">{{ $loanRequest->anggaran_awal ?? '-' }}</p>
-                        </div>
+                        </div> -->
                         <!-- projek -->
                         <div class="rounded-xl p-3.5" style="background:#fafbff; border:1px solid #e8f0fe;">
                             <p class="text-xs font-bold text-blue-400 uppercase tracking-wide mb-1">Projek</p>

@@ -189,7 +189,7 @@
                                 @enderror
                             </div>
 
-                            <!-- anggaran awal -->
+                            <!-- anggaran awal
                             <div class="mt-6">
                                 <label for="anggaran_awal" class="block text-sm font-semibold text-gray-700 mb-2">
                                     Anggaran Awal <span class="text-red-500">*</span>
@@ -201,6 +201,36 @@
                                 @error('anggaran_awal')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
+                            </div> -->
+
+                            <!-- driver -->
+                            <div class="mt-6">
+                                <label for="driver" class="inline-flex items-center gap-4 cursor-pointer group">
+                                    <!-- Toggle Switch -->
+                                    <div class="relative">
+                                        <input type="checkbox" name="driver" id="driver" value="1"
+                                            {{ old('driver') ? 'checked' : '' }}
+                                            class="sr-only peer">
+                                        <div class="w-12 h-6 bg-gray-200 rounded-full peer 
+                        peer-checked:bg-blue-600 
+                        peer-focus:ring-2 peer-focus:ring-blue-400 peer-focus:ring-offset-2
+                        transition-colors duration-300 ease-in-out
+                        group-hover:bg-gray-300 peer-checked:group-hover:bg-blue-700">
+                                        </div>
+                                        <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md
+                        peer-checked:translate-x-6
+                        transition-transform duration-300 ease-in-out">
+                                        </div>
+                                    </div>
+
+                                    <!-- Label & Description -->
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-semibold text-gray-700 group-hover:text-blue-600 transition-colors duration-200">
+                                            Butuh Driver?
+                                        </span>
+                                        <span class="text-xs text-gray-400">Aktifkan jika membutuhkan driver</span>
+                                    </div>
+                                </label>
                             </div>
 
                             <!-- {{-- Kendaraan yang Diminta --}} -->

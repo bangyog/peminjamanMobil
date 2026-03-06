@@ -21,6 +21,7 @@ class VehicleReturn extends Model
         'received_by',
         'odometer_km_end',
         'return_note',
+        'vehicle_condition',
         'anggaran_digunakan',
     ];
 

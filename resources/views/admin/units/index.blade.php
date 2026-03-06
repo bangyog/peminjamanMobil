@@ -213,26 +213,7 @@
                     </div>
                 </div>
 
-                {{-- Status --}}
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">
-                        Status
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                            </svg>
-                        </div>
-                        <select name="status"
-                            class="w-full pl-9 pr-8 py-2.5 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none"
-                            style="border-color:#e2e8f0; background:#fafbff;">
-                            <option value="">Semua Status</option>
-                            <option value="active"   {{ request('status') === 'active'   ? 'selected' : '' }}>✅ Aktif</option>
-                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>❌ Tidak Aktif</option>
-                        </select>
-                    </div>
-                </div>
+
 
             </div>
 
@@ -295,7 +276,7 @@
                         <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kepala Dept.</th>
                         <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Total User</th>
                         <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Pengajuan</th>
-                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                        <!-- <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th> -->
                         <th class="px-5 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
@@ -378,7 +359,7 @@
                         </td>
 
                         {{-- Status --}}
-                        <td class="px-5 py-3.5 whitespace-nowrap">
+                        <!-- <td class="px-5 py-3.5 whitespace-nowrap">
                             @if($isActive)
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full"
                                 style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;">
@@ -396,7 +377,7 @@
                                 Tidak Aktif
                             </span>
                             @endif
-                        </td>
+                        </td> -->
 
                         {{-- Aksi --}}
                         <td class="px-5 py-3.5 whitespace-nowrap">

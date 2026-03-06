@@ -25,11 +25,11 @@ class LoanRequestController extends Controller
     {
         try {
             $user->notify(new LoanNotification(
-                title:   $title,
+                title: $title,
                 message: $message,
-                url:     $url,
-                type:    $type,
-                reason:  $reason,
+                url: $url,
+                type: $type,
+                reason: $reason,
             ));
         } catch (\Exception $e) {
             Log::warning('Gagal kirim notifikasi', [
@@ -98,6 +98,7 @@ class LoanRequestController extends Controller
         $loanRequest->load([
             'requester',
             'unit',
+            'assignment',
             'vehicle',
             'assignment.assignedVehicle',
             'attachments',
@@ -133,6 +134,9 @@ class LoanRequestController extends Controller
 
         $validated = $request->validate([
             'assigned_vehicle_id' => 'required|exists:vehicles,id',
+            'assigned_driver_name' => $loanRequest->driver
+                ? 'required|string|max:150'
+                : 'nullable|string|max:150',
             'signature'           => 'required|string',
             'notes'               => 'nullable|string|max:1000',
         ], [
@@ -164,6 +168,7 @@ class LoanRequestController extends Controller
             LoanAssignment::create([
                 'loan_request_id'     => $loanRequest->id,
                 'assigned_vehicle_id' => $validated['assigned_vehicle_id'],
+                'assigned_driver_name' => $validated['assigned_driver_name'] ?? 'Self-drive',
                 'assigned_by'         => $admin->id,
                 'assigned_at'         => now(),
             ]);
@@ -184,19 +189,25 @@ class LoanRequestController extends Controller
 
             DB::commit();
 
-            // ✅ Notif requester
+            // ✅ Siapkan info driver untuk notifikasi
+            $driverInfo = $loanRequest->driver
+                ? 'Driver: ' . ($validated['assigned_driver_name'] ?? '-')
+                : 'Self-drive (tanpa driver)';
+
+            // ✅ Notif requester — dengan info kendaraan + driver
             $this->sendNotification(
                 $loanRequest->requester,
                 'Pengajuan Disetujui & Kendaraan Ditugaskan',
-                'Pengajuan #' . $loanRequest->id . ' disetujui Admin GA. Kendaraan: '
-                    . $vehicle->brand . ' ' . $vehicle->model . ' (' . $vehicle->plate_no . ').',
+                'Pengajuan #' . $loanRequest->id . ' disetujui Admin GA. '
+                    . 'Kendaraan: ' . $vehicle->brand . ' ' . $vehicle->model . ' (' . $vehicle->plate_no . '). '
+                    . $driverInfo . '.',
                 route('loan-requests.show', $loanRequest),
                 'success'
             );
 
+
             return redirect()->route('admin.loan-requests.show', $loanRequest)
                 ->with('success', 'Pengajuan disetujui dan kendaraan langsung ditugaskan!');
-
         } catch (\Exception $e) {
             DB::rollBack();
             if (isset($signaturePath)) {
@@ -266,7 +277,6 @@ class LoanRequestController extends Controller
 
             return redirect()->route('admin.loan-requests.index')
                 ->with('success', 'Pengajuan berhasil ditolak.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -317,7 +327,6 @@ class LoanRequestController extends Controller
             );
 
             return back()->with('success', 'Status diubah: Kendaraan Sedang Digunakan.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -376,7 +385,6 @@ class LoanRequestController extends Controller
 
             return redirect()->route('admin.loan-requests.index')
                 ->with('success', 'Pengajuan berhasil dibatalkan.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -447,7 +455,6 @@ class LoanRequestController extends Controller
             );
 
             return back()->with('success', 'Pengembalian berhasil diverifikasi!');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

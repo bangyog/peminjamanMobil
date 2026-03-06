@@ -170,21 +170,21 @@
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Projek</p>
                         <p class="text-gray-800 font-medium">{{ $loanRequest->projek ?? '-' }}</p>
                     </div>
-                    <div class="rounded-xl p-4" style="background:#fafbff; border:1px solid #e8f0fe;">
+                    <!-- <div class="rounded-xl p-4" style="background:#fafbff; border:1px solid #e8f0fe;">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Anggaran</p>
                         <p class="text-gray-800 font-medium">{{ $loanRequest->anggaran_awal ?? '-' }}</p>
-                    </div>
+                    </div> -->
 
                     <div class="rounded-xl p-4" style="background:#fafbff; border:1px solid #e8f0fe;">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Kendaraan Diminta</p>
-                        @if($loanRequest->preferredVehicle)
+                        @if($loanRequest->Vehicle)
                         <p class="font-bold text-gray-800">
-                            {{ $loanRequest->preferredVehicle->brand }}
-                            {{ $loanRequest->preferredVehicle->model }}
+                            {{ $loanRequest->Vehicle->brand }}
+                            {{ $loanRequest->Vehicle->model }}
                         </p>
                         <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-lg mt-1 inline-block"
                             style="background:#f1f5f9; color:#475569;">
-                            {{ $loanRequest->preferredVehicle->plate_no }}
+                            {{ $loanRequest->Vehicle->plate_no }}
                         </span>
                         @elseif($loanRequest->requested_vehicle_text)
                         <p class="text-gray-800">{{ $loanRequest->requested_vehicle_text }}</p>
@@ -192,6 +192,50 @@
                         <p class="text-xs text-gray-400 italic">Tidak ada preferensi</p>
                         @endif
                     </div>
+                    <!-- driver -->
+                    <div class="rounded-xl p-4" style="background:#fafbff; border:1px solid #e8f0fe;">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Driver</p>
+
+                        @if($loanRequest->driver)
+                        {{-- User minta driver --}}
+                        <p class="text-gray-800 font-medium mb-1">
+                            <span class="inline-flex items-center gap-1 text-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                Ya, butuh driver
+                            </span>
+                        </p>
+
+                        {{-- Tampilkan nama driver jika sudah di-assign (sudah ada tanda tangan GA) --}}
+                        @if($loanRequest->assignment?->assigned_driver_name)
+                        <p class="text-sm text-gray-600">
+                            Driver ditugaskan:
+                            <span class="font-semibold text-gray-800">
+                                {{ $loanRequest->assignment->assigned_driver_name }}
+                            </span>
+                        </p>
+                        @else
+                        <p class="text-sm text-amber-500 italic">Menunggu penugasan driver oleh Admin GA...</p>
+                        @endif
+
+                        @else
+                        {{-- Self-drive --}}
+                        <p class="text-gray-800 font-medium">
+                            <span class="inline-flex items-center gap-1 text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 11c2.21 0 4-1.79 4-4S14.21 3 12 3 8 4.79 8 7s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z" />
+                                </svg>
+                                Tidak, self-drive
+                            </span>
+                        </p>
+                        @endif
+                    </div>
+
                     <div class="rounded-xl p-4" style="background:#fafbff; border:1px solid #e8f0fe;">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Kota Pengajuan</p>
                         <p class="text-gray-800 font-medium">{{ $loanRequest->request_city ?? '-' }}</p>
@@ -613,7 +657,7 @@
 
         <div class="flex items-center gap-2 flex-wrap">
 
-            {{-- Download PDF --}}
+            <!-- {{-- Download PDF --}}
             <a href="{{ route('loan-requests.pdf', $loanRequest) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-white rounded-xl transition"
                 style="background:linear-gradient(135deg,#dc2626,#ef4444);">
@@ -621,7 +665,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 PDF
-            </a>
+            </a> -->
 
 
             @if($loanRequest->status === 'submitted')
@@ -693,143 +737,149 @@
     </div>
 
     {{-- ===== CUSTOM DELETE MODAL ===== --}}
-<div x-data="deleteModal()" x-on:open-delete-modal.window="open($event.detail)">
+    <div x-data="deleteModal()" x-on:open-delete-modal.window="open($event.detail)">
 
-    {{-- Backdrop --}}
-    <div
-        x-show="isOpen"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-40"
-        style="background:rgba(15,23,42,0.5); backdrop-filter:blur(3px);"
-        x-cloak
-    ></div>
+        {{-- Backdrop --}}
+        <div
+            x-show="isOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-40"
+            style="background:rgba(15,23,42,0.5); backdrop-filter:blur(3px);"
+            x-cloak></div>
 
-    {{-- Modal Panel --}}
-    <div
-        x-show="isOpen"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 scale-95 translate-y-3"
-        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-        x-transition:leave-end="opacity-0 scale-95 translate-y-3"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
-        @keydown.escape.window="isOpen = false"
-        x-cloak
-    >
-        <div class="w-full max-w-sm rounded-2xl overflow-hidden"
-            style="background:#fff; box-shadow:0 25px 60px rgba(0,0,0,0.2);"
-            @click.outside="isOpen = false">
+        {{-- Modal Panel --}}
+        <div
+            x-show="isOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95 translate-y-3"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+            x-transition:leave-end="opacity-0 scale-95 translate-y-3"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            @keydown.escape.window="isOpen = false"
+            x-cloak>
+            <div class="w-full max-w-sm rounded-2xl overflow-hidden"
+                style="background:#fff; box-shadow:0 25px 60px rgba(0,0,0,0.2);"
+                @click.outside="isOpen = false">
 
-            {{-- Accent bar shimmer --}}
-            <div class="h-1.5"
-                style="background:linear-gradient(90deg,#ef4444,#f97316,#ef4444);
+                {{-- Accent bar shimmer --}}
+                <div class="h-1.5"
+                    style="background:linear-gradient(90deg,#ef4444,#f97316,#ef4444);
                        background-size:200%;
                        animation:shimmer 2s linear infinite;">
-            </div>
+                </div>
 
-            <div class="p-7">
+                <div class="p-7">
 
-                {{-- Icon --}}
-                <div class="flex justify-center mb-5">
-                    <div class="relative">
-                        <div class="w-20 h-20 rounded-2xl flex items-center justify-center"
-                            style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">
-                            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    {{-- Icon --}}
+                    <div class="flex justify-center mb-5">
+                        <div class="relative">
+                            <div class="w-20 h-20 rounded-2xl flex items-center justify-center"
+                                style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">
+                                <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </div>
+                            <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center"
+                                style="background:linear-gradient(135deg,#dc2626,#ef4444); box-shadow:0 2px 8px rgba(220,38,38,0.4);">
+                                <span class="text-white text-xs font-black">!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Text --}}
+                    <h3 class="text-xl font-extrabold text-gray-800 text-center">Hapus Pengajuan?</h3>
+
+                    <div class="mt-3 mx-auto max-w-xs">
+                        <div class="rounded-xl px-4 py-3 text-center" style="background:#fafafa; border:1px solid #f0f0f0;">
+                            <p class="text-xs text-gray-400 mb-1">Yang akan dihapus</p>
+                            <p class="font-extrabold text-gray-800 text-base" x-text="itemLabel"></p>
+                        </div>
+                        <p class="text-sm text-gray-500 text-center mt-3 leading-relaxed">
+                            Data pengajuan ini akan
+                            <span class="font-bold text-red-600">dihapus permanen</span>
+                            dan tidak dapat dipulihkan kembali.
+                        </p>
+                    </div>
+
+                    {{-- Buttons --}}
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" @click="isOpen = false"
+                            class="flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-150"
+                            style="background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;"
+                            onmouseover="this.style.background='#e2e8f0';"
+                            onmouseout="this.style.background='#f1f5f9';">
+                            Batal
+                        </button>
+                        <button type="button" @click="submitForm()" x-ref="confirmBtn"
+                            class="flex-1 py-3 text-sm font-bold text-white rounded-xl transition-all duration-150 flex items-center justify-center gap-2"
+                            style="background:linear-gradient(135deg,#dc2626,#ef4444); box-shadow:0 4px 14px rgba(220,38,38,0.35);"
+                            onmouseover="this.style.boxShadow='0 6px 20px rgba(220,38,38,0.5)'; this.style.transform='translateY(-1px)';"
+                            onmouseout="this.style.boxShadow='0 4px 14px rgba(220,38,38,0.35)'; this.style.transform='translateY(0)';">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
-                        </div>
-                        <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center"
-                            style="background:linear-gradient(135deg,#dc2626,#ef4444); box-shadow:0 2px 8px rgba(220,38,38,0.4);">
-                            <span class="text-white text-xs font-black">!</span>
-                        </div>
+                            Ya, Hapus
+                        </button>
                     </div>
-                </div>
 
-                {{-- Text --}}
-                <h3 class="text-xl font-extrabold text-gray-800 text-center">Hapus Pengajuan?</h3>
-
-                <div class="mt-3 mx-auto max-w-xs">
-                    <div class="rounded-xl px-4 py-3 text-center" style="background:#fafafa; border:1px solid #f0f0f0;">
-                        <p class="text-xs text-gray-400 mb-1">Yang akan dihapus</p>
-                        <p class="font-extrabold text-gray-800 text-base" x-text="itemLabel"></p>
-                    </div>
-                    <p class="text-sm text-gray-500 text-center mt-3 leading-relaxed">
-                        Data pengajuan ini akan
-                        <span class="font-bold text-red-600">dihapus permanen</span>
-                        dan tidak dapat dipulihkan kembali.
-                    </p>
-                </div>
-
-                {{-- Buttons --}}
-                <div class="flex gap-3 mt-6">
-                    <button type="button" @click="isOpen = false"
-                        class="flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-150"
-                        style="background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;"
-                        onmouseover="this.style.background='#e2e8f0';"
-                        onmouseout="this.style.background='#f1f5f9';">
-                        Batal
-                    </button>
-                    <button type="button" @click="submitForm()" x-ref="confirmBtn"
-                        class="flex-1 py-3 text-sm font-bold text-white rounded-xl transition-all duration-150 flex items-center justify-center gap-2"
-                        style="background:linear-gradient(135deg,#dc2626,#ef4444); box-shadow:0 4px 14px rgba(220,38,38,0.35);"
-                        onmouseover="this.style.boxShadow='0 6px 20px rgba(220,38,38,0.5)'; this.style.transform='translateY(-1px)';"
-                        onmouseout="this.style.boxShadow='0 4px 14px rgba(220,38,38,0.35)'; this.style.transform='translateY(0)';">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    {{-- Escape hint --}}
+                    <p class="text-xs text-gray-400 text-center mt-4 flex items-center justify-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Ya, Hapus
-                    </button>
+                        Tekan <kbd class="mx-1 px-1.5 py-0.5 rounded text-xs font-mono"
+                            style="background:#f1f5f9; border:1px solid #e2e8f0;">Esc</kbd> untuk membatalkan
+                    </p>
+
                 </div>
-
-                {{-- Escape hint --}}
-                <p class="text-xs text-gray-400 text-center mt-4 flex items-center justify-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Tekan <kbd class="mx-1 px-1.5 py-0.5 rounded text-xs font-mono"
-                        style="background:#f1f5f9; border:1px solid #e2e8f0;">Esc</kbd> untuk membatalkan
-                </p>
-
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    function deleteModal() {
-        return {
-            isOpen:    false,
-            itemLabel: '',
-            formId:    '',
-            open(detail) {
-                this.itemLabel = detail.label;
-                this.formId    = detail.formId;
-                this.isOpen    = true;
-                setTimeout(() => this.$refs.confirmBtn?.focus(), 250);
-            },
-            submitForm() {
-                const form = document.getElementById(this.formId);
-                if (form) form.submit();
+    <script>
+        function deleteModal() {
+            return {
+                isOpen: false,
+                itemLabel: '',
+                formId: '',
+                open(detail) {
+                    this.itemLabel = detail.label;
+                    this.formId = detail.formId;
+                    this.isOpen = true;
+                    setTimeout(() => this.$refs.confirmBtn?.focus(), 250);
+                },
+                submitForm() {
+                    const form = document.getElementById(this.formId);
+                    if (form) form.submit();
+                }
             }
         }
-    }
-</script>
+    </script>
 
-<style>
-    @keyframes shimmer {
-        0%   { background-position: 200% center; }
-        100% { background-position: -200% center; }
-    }
-    [x-cloak] { display: none !important; }
-</style>
+    <style>
+        @keyframes shimmer {
+            0% {
+                background-position: 200% center;
+            }
+
+            100% {
+                background-position: -200% center;
+            }
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 
 
 </x-app-layout>
