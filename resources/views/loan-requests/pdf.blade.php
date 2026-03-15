@@ -7,12 +7,19 @@
 <style>
 @page { margin: 20mm 20mm 18mm 25mm; }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: Arial, sans-serif; font-size:13px; color:#000; line-height:1.5; }
+body { font-family: Arial, sans-serif; font-size:12px; color:#000; line-height:1.5; }
+table { border-collapse: collapse; }
+.bold { font-weight: bold; }
+.center { text-align: center; }
+.label { width: 185px; }
+.colon { width: 10px; }
 </style>
 </head>
 <body>
 
 @php
+    \Carbon\Carbon::setLocale('id');
+
     $kepalaApproval = $loanRequest->approvals
         ->where('approval_level','kepala')->where('decision','approved')->first();
     $gaApproval = $loanRequest->approvals
@@ -36,232 +43,275 @@ body { font-family: Arial, sans-serif; font-size:13px; color:#000; line-height:1
     $anggaranAwal = data_get($loanRequest, 'anggaran_awal');
     $kota = $loanRequest->request_city ?? 'Gresik';
 
+    // ✅ Fix: gunakan file:// untuk DomPDF bisa load gambar
     $sig = function($path) {
         if (!$path) return null;
         $abs = storage_path('app/public/'.$path);
-        return file_exists($abs) ? $abs : null;
+        return file_exists($abs) ? 'file://'.$abs : null;
     };
+
+    $logoPath = public_path('images/swa-logo.png');
+    $logoSrc  = file_exists($logoPath) ? 'file://'.$logoPath : null;
 
     $userSig   = $sig($loanRequest->requester_signature);
     $kepalaSig = $kepalaApproval ? $sig($kepalaApproval->approver_signature) : null;
     $gaSig     = $gaApproval    ? $sig($gaApproval->approver_signature)      : null;
+
+    // ✅ Fix: format tanggal Indonesia manual
+    $bulanId = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $tglBuat   = \Carbon\Carbon::parse($loanRequest->created_at);
+    $tglIndo   = $tglBuat->day.' '.$bulanId[$tglBuat->month].' '.$tglBuat->year;
+
+    $formatTgl = function($dt) use ($bulanId) {
+        if (!$dt) return '-';
+        $c = \Carbon\Carbon::parse($dt);
+        return $c->format('H:i').' WIB, '.$c->day.' '.$bulanId[$c->month].' '.$c->year;
+    };
+    $formatTglShort = function($dt) use ($bulanId) {
+        if (!$dt) return '-';
+        $c = \Carbon\Carbon::parse($dt);
+        return $c->day.' '.$bulanId[$c->month].' '.$c->year;
+    };
 @endphp
 
-{{-- HEADER --}}
-<table style="width:100%; border-collapse:collapse; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:10px;">
+{{-- ===== HEADER ===== --}}
+<table style="width:100%; margin-bottom:10px; padding-bottom:8px; border-bottom:2px solid #000;">
     <tr>
+        {{-- Logo --}}
         <td style="width:70px; vertical-align:middle;">
-            <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#1e3a8a,#3b82f6); border:2px solid #1e3a8a; text-align:center; line-height:60px;">
-                <span style="color:#fff; font-size:14px; font-weight:bold;">SWG</span>
-            </div>
+            @if($logoSrc)
+                <img src="{{ $logoSrc }}" style="width:55px; height:55px; object-fit:contain;" alt="Logo">
+            @else
+                {{-- ✅ Fix: solid color, bukan gradient --}}
+                <div style="width:55px; height:55px; border-radius:28px; background:#1e3a8a; border:2px solid #1e3a8a; text-align:center; padding-top:14px;">
+                    <span style="color:#fff; font-size:13px; font-weight:bold;">SWG</span>
+                </div>
+            @endif
         </td>
         <td style="vertical-align:middle; padding-left:10px;">
             <div style="font-size:14px; font-weight:bold;">PT. Swabina Gatra</div>
-            <div style="font-size:11px; color:#333;">Jl. R.A Kartini 21 A Gresik</div>
+            <div style="font-size:11px; color:#444;">Jl. R.A Kartini 21 A Gresik</div>
         </td>
-        <td style="text-align:right; vertical-align:top; font-size:12px; width:160px;">
-            {{ $kota }}, {{ \Carbon\Carbon::parse($loanRequest->created_at)->translatedFormat('d F Y') }}
+        <td style="text-align:right; vertical-align:top; font-size:12px; width:170px;">
+            {{ $kota }}, {{ $tglIndo }}
         </td>
     </tr>
 </table>
 
-{{-- TITLE --}}
-<p style="text-align:center; font-size:14px; font-weight:bold; margin:12px 0 14px;">
+{{-- ===== TITLE ===== --}}
+<p style="text-align:center; font-size:14px; font-weight:bold; margin:12px 0 14px; text-decoration:underline;">
     PERMINTAAN PEMINJAMAN KENDARAAN DINAS
 </p>
 
-{{-- DIMINTA OLEH / MENGETAHUI ATASAN --}}
-<table style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+{{-- ===== TANDA TANGAN ATAS: Diminta Oleh & Mengetahui Atasan ===== --}}
+<table style="width:100%; margin-bottom:14px;">
     <tr>
-        <td style="width:50%; text-align:center; padding:0 10px 0 0;">
-            <div style="font-size:13px; font-weight:bold; margin-bottom:6px;">Diminta Oleh</div>
-            <div style="height:70px; text-align:center;">
+        <td style="width:50%; text-align:center; padding:0 12px 0 0; vertical-align:top;">
+            <div style="font-size:12px; font-weight:bold; margin-bottom:6px;">Diminta Oleh</div>
+            <div style="height:100px; text-align:center; vertical-align:middle;">
                 @if($userSig)
-                    <img src="{{ $userSig }}" style="max-height:70px; width:auto; object-fit:contain;" alt="">
+                    <img src="{{ $userSig }}" style="max-height:100px; max-width:140px;" alt="">
                 @endif
             </div>
-            <div style="border-top:1px solid #000; padding-top:4px; font-size:12px; font-weight:bold; margin-top:4px;">
+            <div style="border-top:1px solid #000; padding-top:3px; font-size:12px; font-weight:bold;">
                 {{ $loanRequest->requester->full_name ?? '-' }}
             </div>
             <div style="font-size:11px; color:#555;">{{ $loanRequest->unit->name ?? '' }}</div>
         </td>
-        <td style="width:50%; text-align:center; padding:0 0 0 10px; border-left:1px solid #ccc;">
-            <div style="font-size:13px; font-weight:bold; margin-bottom:6px;">Mengetahui Atasan Divisi</div>
-            <div style="height:70px; text-align:center;">
+        <td style="width:50%; text-align:center; padding:0 0 0 12px; border-left:1px solid #ccc; vertical-align:top;">
+            <div style="font-size:12px; font-weight:bold; margin-bottom:6px;">Mengetahui Atasan Divisi</div>
+            <div style="height:100px; text-align:center; vertical-align:middle;">
                 @if($kepalaSig)
-                    <img src="{{ $kepalaSig }}" style="max-height:70px; width:auto; object-fit:contain;" alt="">
+                    <img src="{{ $kepalaSig }}" style="max-height:100px; max-width:140px;" alt="">
                 @endif
             </div>
-            <div style="border-top:1px solid #000; padding-top:4px; font-size:12px; font-weight:bold; margin-top:4px;">
+            <div style="border-top:1px solid #000; padding-top:3px; font-size:12px; font-weight:bold;">
                 {{ $kepalaName }}
             </div>
-            @if($kepalaApproval)
+            @if($kepalaApproval && $kepalaApproval->decided_at)
             <div style="font-size:11px; color:#555;">
-                Disetujui {{ \Carbon\Carbon::parse($kepalaApproval->decided_at)->translatedFormat('d M Y') }}
+                Disetujui {{ $formatTglShort($kepalaApproval->decided_at) }}
             </div>
             @endif
         </td>
     </tr>
 </table>
 
-{{-- FORM FIELDS --}}
-<table style="width:100%; border-collapse:collapse; margin-bottom:12px;">
+{{-- ===== FORM FIELDS ===== --}}
+<table style="width:100%; margin-bottom:14px;">
     <tr>
-        <td style="width:185px; font-size:13px; padding:2px 0;">Nama Pemakai</td>
-        <td style="width:10px; font-size:13px; padding:2px 0;">:</td>
-        <td style="font-size:13px; padding:2px 0 2px 4px; border-bottom:1px solid #000;">{{ $loanRequest->requester->full_name ?? '-' }}</td>
+        <td class="label" style="font-size:12px; padding:3px 0;">Nama Pemakai</td>
+        <td class="colon" style="font-size:12px; padding:3px 0;">:</td>
+        <td style="font-size:12px; padding:3px 0 3px 6px; border-bottom:1px solid #000;">
+            {{ $loanRequest->requester->full_name ?? '-' }}
+        </td>
     </tr>
     <tr>
-        <td style="font-size:13px; padding:2px 0;">Keperluan</td>
-        <td style="font-size:13px; padding:2px 0;">:</td>
-        <td style="font-size:13px; padding:2px 0 2px 4px; border-bottom:1px solid #000;">{{ $loanRequest->purpose ?? '-' }}</td>
+        <td style="font-size:12px; padding:3px 0;">Keperluan</td>
+        <td style="font-size:12px; padding:3px 0;">:</td>
+        <td style="font-size:12px; padding:3px 0 3px 6px; border-bottom:1px solid #000;">
+            {{ $loanRequest->purpose ?? '-' }}
+        </td>
+    </tr>
+    @if($loanRequest->projek)
+    <tr>
+        <td style="font-size:12px; padding:3px 0;">Projek</td>
+        <td style="font-size:12px; padding:3px 0;">:</td>
+        <td style="font-size:12px; padding:3px 0 3px 6px; border-bottom:1px solid #000;">
+            {{ $loanRequest->projek }}
+        </td>
+    </tr>
+    @endif
+    <tr>
+        <td style="font-size:12px; padding:3px 0;">Tujuan</td>
+        <td style="font-size:12px; padding:3px 0;">:</td>
+        <td style="font-size:12px; padding:3px 0 3px 6px; border-bottom:1px solid #000;">
+            {{ $loanRequest->destination ?? '-' }}
+        </td>
     </tr>
     <tr>
-        <td style="font-size:13px; padding:2px 0;">Tujuan</td>
-        <td style="font-size:13px; padding:2px 0;">:</td>
-        <td style="font-size:13px; padding:2px 0 2px 4px; border-bottom:1px solid #000;">{{ $loanRequest->destination ?? '-' }}</td>
+        <td style="font-size:12px; padding:3px 0;">Kendaraan yang Diminta</td>
+        <td style="font-size:12px; padding:3px 0;">:</td>
+        <td style="font-size:12px; padding:3px 0 3px 6px; border-bottom:1px solid #000;">
+            {{ $vehicleText }}
+        </td>
     </tr>
     <tr>
-        <td style="font-size:13px; padding:2px 0;">Kendaraan yang Diminta</td>
-        <td style="font-size:13px; padding:2px 0;">:</td>
-        <td style="font-size:13px; padding:2px 0 2px 4px; border-bottom:1px solid #000;">{{ $vehicleText }}</td>
-    </tr>
-    <tr>
-        <td style="font-size:13px; padding:2px 0;">Lain-lain</td>
-        <td style="font-size:13px; padding:2px 0;">:</td>
-        <td style="font-size:13px; padding:2px 0 2px 4px; border-bottom:1px solid #000;">{{ $loanRequest->notes ?: '-' }}</td>
+        <td style="font-size:12px; padding:3px 0;">Lain-lain / Catatan</td>
+        <td style="font-size:12px; padding:3px 0;">:</td>
+        <td style="font-size:12px; padding:3px 0 3px 6px; border-bottom:1px solid #000;">
+            {{ $loanRequest->notes ?: '-' }}
+        </td>
     </tr>
 </table>
 
-{{-- MAIN TABLE --}}
-<table style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:13px;">
+{{-- ===== TABEL UTAMA ===== --}}
+<table style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:12px;">
 
-    {{-- Header --}}
+    {{-- Header row --}}
     <tr>
-        <td style="width:62%; text-align:center; font-weight:bold; background:#ececec; border:1px solid #000; padding:6px 8px;">DIISI PEMAKAI</td>
-        <td style="width:19%; text-align:center; font-weight:bold; background:#ececec; border:1px solid #000; padding:6px 4px;">Paraf Pemakai</td>
-        <td style="width:19%; text-align:center; font-weight:bold; background:#ececec; border:1px solid #000; padding:6px 4px;">Paraf Foreman<br>Pelayanan Umum</td>
+        <td style="width:60%; text-align:center; font-weight:bold; background:#e0e0e0; border:1px solid #000; padding:5px 8px;">
+            DIISI PEMAKAI
+        </td>
+        <td style="width:20%; text-align:center; font-weight:bold; background:#e0e0e0; border:1px solid #000; padding:5px 4px;">
+            Paraf Pemakai
+        </td>
+        <td style="width:20%; text-align:center; font-weight:bold; background:#e0e0e0; border:1px solid #000; padding:5px 4px;">
+            Paraf Foreman<br>Pelayanan Umum
+        </td>
     </tr>
 
-    {{-- Satu baris: kiri nested Berangkat+Kembali, kanan TTD 1 sel --}}
+    {{-- Content row --}}
     <tr>
-        {{-- Kiri: nested Berangkat + Kembali --}}
-        <td style="border:1px solid #000; padding:0;">
+        {{-- Kiri: Berangkat + Kembali --}}
+        <td style="border:1px solid #000; padding:0; vertical-align:top;">
             <table style="width:100%; border-collapse:collapse;">
                 <tr>
-                    <td style="text-align:center; font-weight:bold; background:#e0e0e0; border-bottom:1px solid #000; padding:4px 8px;">Berangkat</td>
-                </tr>
-                <tr>
-                    <td style="padding:8px 10px; line-height:1.8;">
-                        <span style="font-weight:bold;">Siap di</span> &nbsp;: {{ $loanRequest->siap_di ?? '-' }}<br>
-                        @if($anggaranAwal)
-                        <span style="font-weight:bold;">Anggaran Awal</span> &nbsp;: Rp {{ number_format((float)$anggaranAwal,0,',','.') }}<br>
-                        @endif
-                        <span style="font-weight:bold;">Jam &amp; Tanggal</span> &nbsp;:
-                        @if($loanRequest->depart_at)
-                            {{ \Carbon\Carbon::parse($loanRequest->depart_at)->format('H:i') }} WIB,
-                            {{ \Carbon\Carbon::parse($loanRequest->depart_at)->translatedFormat('d F Y') }}
-                        @else
-                            -
-                        @endif
+                    <td style="text-align:center; font-weight:bold; background:#eeeeee; border-bottom:1px solid #000; padding:4px 8px;">
+                        Berangkat
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align:center; font-weight:bold; background:#e0e0e0; border-top:1px solid #000; border-bottom:1px solid #000; padding:4px 8px;">Kembali</td>
+                    <td style="padding:8px 12px; line-height:2;">
+                        <span style="font-weight:bold;">Siap di</span>&nbsp;: {{ $loanRequest->siap_di ?? '-' }}<br>
+                        @if($anggaranAwal)
+                        <span style="font-weight:bold;">Anggaran Awal</span>&nbsp;: Rp {{ number_format((float)$anggaranAwal, 0, ',', '.') }}<br>
+                        @endif
+                        <span style="font-weight:bold;">Jam &amp; Tanggal</span>&nbsp;: {{ $formatTgl($loanRequest->depart_at) }}
+                    </td>
                 </tr>
                 <tr>
-                    <td style="padding:8px 10px; line-height:1.8;">
-                        <span style="font-weight:bold;">Siap di</span> &nbsp;: {{ $loanRequest->kembali_di ?? '-' }}<br>
-                        <span style="font-weight:bold;">Jam &amp; Tanggal</span> &nbsp;:
-                        @if($loanRequest->expected_return_at)
-                            {{ \Carbon\Carbon::parse($loanRequest->expected_return_at)->format('H:i') }} WIB,
-                            {{ \Carbon\Carbon::parse($loanRequest->expected_return_at)->translatedFormat('d F Y') }}
-                        @else
-                            -
-                        @endif
+                    <td style="text-align:center; font-weight:bold; background:#eeeeee; border-top:1px solid #000; border-bottom:1px solid #000; padding:4px 8px;">
+                        Kembali
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 12px; line-height:2;">
+                        <span style="font-weight:bold;">Siap di</span>&nbsp;: {{ $loanRequest->kembali_di ?? '-' }}<br>
+                        <span style="font-weight:bold;">Jam &amp; Tanggal</span>&nbsp;: {{ $formatTgl($loanRequest->expected_return_at) }}
                     </td>
                 </tr>
             </table>
         </td>
 
-        {{-- Kanan: Paraf Pemakai — 1 sel mencakup Berangkat+Kembali --}}
+        {{-- Paraf Pemakai --}}
         <td style="border:1px solid #000; text-align:center; vertical-align:middle; padding:8px 4px;">
             @if($userSig)
-                <img src="{{ $userSig }}" style="max-height:70px; width:auto; object-fit:contain; display:block; margin:0 auto 4px;" alt="">
+                <img src="{{ $userSig }}" style="max-height:100px; max-width:140px; display:block; margin:0 auto 4px;" alt="">
             @else
-                <div style="height:70px;"></div>
+                <div style="height:100px;"></div>
             @endif
-            <div style="border-top:1px solid #000; padding-top:3px; font-size:11px;">
+            <div style="border-top:1px solid #000; padding-top:3px; font-size:11px; font-weight:bold;">
                 {{ $loanRequest->requester->full_name ?? '-' }}
             </div>
         </td>
 
-        {{-- Kanan: Paraf Foreman GA — 1 sel mencakup Berangkat+Kembali --}}
+        {{-- Paraf Foreman GA --}}
         <td style="border:1px solid #000; text-align:center; vertical-align:middle; padding:8px 4px;">
             @if($gaSig)
-                <img src="{{ $gaSig }}" style="max-height:70px; width:auto; object-fit:contain; display:block; margin:0 auto 4px;" alt="">
+                <img src="{{ $gaSig }}" style="max-height:100px; max-width:140px; display:block; margin:0 auto 4px;" alt="">
             @else
-                <div style="height:70px;"></div>
+                <div style="height:100px;"></div>
             @endif
             @if($gaApproval)
-            <div style="border-top:1px solid #000; padding-top:3px; font-size:11px;">
+            <div style="border-top:1px solid #000; padding-top:3px; font-size:11px; font-weight:bold;">
                 {{ $gaName }}
             </div>
             @endif
         </td>
     </tr>
-
 </table>
 
-{{-- OLEH PIMPINAN KENDARAAN --}}
-<table style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+{{-- ===== OLEH PIMPINAN KENDARAAN ===== --}}
+<table style="width:100%; margin-bottom:16px;">
     <tr>
-        <td style="width:65%; vertical-align:top; padding-right:16px;">
-            <p style="font-size:13px; font-weight:bold; margin-bottom:10px;">
+        <td style="width:62%; vertical-align:top; padding-right:20px;">
+            <p style="font-size:12px; font-weight:bold; margin-bottom:12px;">
                 OLEH PIMPINAN KENDARAAN
             </p>
-
-            <p style="font-size:13px; line-height:2.2;">
-                Diperintahkan kepada Sdr.
-                <span style="display:inline-block; min-width:180px;">
-                    {{ $driverName }}
-                </span>
-            </p>
-
-            <p style="font-size:13px; line-height:2.2;">
-                Untuk melayani sesuai dengan permintaan tersebut diatas
-            </p>
-
-            <p style="font-size:13px; line-height:2.2;">
-                Dengan kendaraan
-                <span style="display:inline-block; min-width:180px;">
-                    {{ $vehicleText }}
-                </span>
-            </p>
+            <table style="width:100%;">
+                <tr>
+                    <td style="font-size:12px; white-space:nowrap; padding:3px 0;">Diperintahkan kepada Sdr.</td>
+                    <td style="font-size:12px; padding:3px 0 3px 8px; width:100%;">
+                        {{ $driverName }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size:12px; padding:6px 0;">
+                        Untuk melayani sesuai dengan permintaan tersebut diatas
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size:12px; white-space:nowrap; padding:3px 0;">Dengan kendaraan</td>
+                    <td style="font-size:12px; padding:3px 0 3px 8px; width:100%;">
+                        {{ $vehicleText }}
+                    </td>
+                </tr>
+            </table>
         </td>
-
-        <td style="width:35%; text-align:center; vertical-align:bottom; padding-top:10px;">
+        <td style="width:38%; text-align:center; vertical-align:bottom; padding-top:6px;">
             @if($gaSig)
-                <img src="{{ $gaSig }}"
-                     style="max-height:70px; width:auto; object-fit:contain; display:block; margin:0 auto 4px;"
-                     alt="">
+                <img src="{{ $gaSig }}" style="max-height:100px; max-width:140px; display:block; margin:0 auto 4px;" alt="">
             @else
-                <div style="height:70px;"></div>
+                <div style="height:100px;"></div>
             @endif
-
-            <div style="border-top:1.5px solid #000; padding-top:4px; font-size:13px; font-weight:bold;">
+            <div style="border-top:1.5px solid #000; padding-top:4px; font-size:12px; font-weight:bold;">
                 Foreman Pelayanan Umum
             </div>
-
-            <div style="font-size:11px; color:#333;">
+            <div style="font-size:11px; color:#333; margin-top:2px;">
                 {{ $gaName }}
             </div>
+            @if($gaApproval && $gaApproval->decided_at)
+            <div style="font-size:10px; color:#666;">
+                {{ $formatTglShort($gaApproval->decided_at) }}
+            </div>
+            @endif
         </td>
     </tr>
 </table>
 
-{{-- CATATAN --}}
-<p style="font-size:12px; margin-top:6px;">
+{{-- ===== CATATAN ===== --}}
+<p style="font-size:11px; margin-top:8px; border-top:1px solid #ccc; padding-top:6px; color:#444;">
     <strong>Catatan :</strong>
     Permintaan supaya diajukan sehari sebelum dan diterima bagian kendaraan.
     Pool kendaraan yang ada dan terbatas.

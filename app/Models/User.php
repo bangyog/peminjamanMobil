@@ -115,7 +115,7 @@ class User extends Authenticatable
 
     public function scopeAdmins($query)
     {
-        return $query->whereIn('role', ['admin_ga', 'admin_akuntansi']);
+        return $query->whereIn('role', ['admin_ga', 'admin_hr']);
     }
 
     public function scopeUsers($query)
@@ -133,9 +133,9 @@ class User extends Authenticatable
         return $query->where('role', 'admin_ga');
     }
 
-    public function scopeAdminAkuntansi($query)
+    public function scopeAdminHR($query)
     {
-        return $query->where('role', 'admin_akuntansi');
+        return $query->where('role', 'admin_hr');
     }
 
     public function scopeInUnit($query, $unitId)
@@ -168,13 +168,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is Admin Akuntansi
+     * Check if user is Admin HR
      */
-    public function isAdminAkuntansi(): bool
+    public function isAdminHR(): bool
     {
-        return $this->role === 'admin_akuntansi';
+        return $this->role === 'admin_hr';
     }
-
     /**
      * Check if user is Kepala Departemen
      */
@@ -204,7 +203,7 @@ class User extends Authenticatable
      */
     public function hasAdminRole(): bool
     {
-        return in_array($this->role, ['admin_ga', 'admin_akuntansi']);
+        return in_array($this->role, ['admin_ga', 'admin_hr']);
     }
 
     /**
@@ -230,7 +229,7 @@ class User extends Authenticatable
      */
     public function canApproveLoan(): bool
     {
-        return in_array($this->role, ['admin_ga', 'kepala_departemen', 'admin_akuntansi']) 
+        return in_array($this->role, ['admin_ga', 'kepala_departemen', 'admin_hr']) 
             && $this->is_active;
     }
 
@@ -267,27 +266,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Only Admin Akuntansi can monitor returns
-     */
-    public function canMonitorReturns(): bool
-    {
-        return $this->role === 'admin_akuntansi';
-    }
-
-    /**
-     * Only Admin GA can view all history
+     * Admin HR & Admin GA bisa lihat semua history peminjaman lintas unit
      */
     public function canViewAllHistory(): bool
     {
-        return $this->role === 'admin_ga';
+        return in_array($this->role, ['admin_ga', 'admin_hr']);
     }
 
     /**
-     * Only Admin Akuntansi can view return expenses
+     * Hanya Admin HR yang bisa export history peminjaman ke PDF
      */
-    public function canViewReturnExpenses(): bool
+    public function canExportHistoryPDF(): bool
     {
-        return $this->role === 'admin_akuntansi';
+        return $this->role === 'admin_hr' && $this->is_active;
     }
 
     /**
@@ -304,8 +295,8 @@ class User extends Authenticatable
             return $targetRole === 'kepala_departemen';
         }
 
-        // Kepala Departemen & Admin Akuntansi HANYA bisa create user biasa
-        if ($this->isKepalaDepartemen() || $this->isAdminAkuntansi()) {
+        // Kepala Departemen & Admin HR HANYA bisa create user biasa
+        if ($this->isKepalaDepartemen() || $this->isAdminHR()) {
             return $targetRole === 'user';
         }
 
@@ -326,8 +317,8 @@ class User extends Authenticatable
             return $targetUser->role === 'kepala_departemen';
         }
 
-        // Kepala Departemen & Admin Akuntansi hanya bisa manage user di unitnya
-        if ($this->isKepalaDepartemen() || $this->isAdminAkuntansi()) {
+        // Kepala Departemen & Admin HR hanya bisa manage user di unitnya
+        if ($this->isKepalaDepartemen() || $this->isAdminHR()) {
             return $targetUser->unit_id === $this->unit_id 
                 && $targetUser->role === 'user';
         }
@@ -345,8 +336,8 @@ class User extends Authenticatable
             return true;
         }
 
-        // Admin Akuntansi bisa lihat semua (untuk monitoring return)
-        if ($this->isAdminAkuntansi()) {
+        // Admin HR bisa lihat semua (untuk monitoring return)
+        if ($this->isAdminHR()) {
             return true;
         }
 
@@ -377,8 +368,8 @@ class User extends Authenticatable
             return true;
         }
 
-        // Kepala Departemen & Admin Akuntansi hanya bisa approve dari unitnya (level 1)
-        if ($this->isKepalaDepartemen() || $this->isAdminAkuntansi()) {
+        // Kepala Departemen & Admin HR hanya bisa approve dari unitnya (level 1)
+        if ($this->isKepalaDepartemen() || $this->isAdminHR()) {
             return $loan->unit_id === $this->unit_id;
         }
 
@@ -394,7 +385,7 @@ class User extends Authenticatable
             return 'ga'; // Level 2
         }
 
-        if ($this->isKepalaDepartemen() || $this->isAdminAkuntansi()) {
+        if ($this->isKepalaDepartemen() || $this->isAdminHR()) {
             return 'kepala'; // Level 1
         }
 
@@ -408,7 +399,7 @@ class User extends Authenticatable
     {
         return match($this->role) {
             'admin_ga' => 'Admin GA',
-            'admin_akuntansi' => 'Admin Akuntansi',
+            'admin_hr' => 'Admin HR',
             'kepala_departemen' => 'Kepala Departemen',
             'user' => 'User',
             default => 'Unknown'
@@ -422,7 +413,7 @@ class User extends Authenticatable
     {
         return match($this->role) {
         'admin_ga'          => 'dashboard', // ✅
-        'admin_akuntansi'   => 'dashboard', // ✅ sama, tapi view beda
+        'admin_hr'   => 'dashboard', // ✅ sama, tapi view beda
         'kepala_departemen' => 'dashboard', // ✅ sama, tapi view beda
         'user'              => 'dashboard',
             default => 'dashboard'

@@ -23,7 +23,7 @@ class UserController extends Controller
 
         if ($currentUser->role === 'admin_ga') {
             $query->where('role', 'kepala_departemen');
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             $query->where('unit_id', $currentUser->unit_id)
                   ->where('role', 'user');
         }
@@ -52,7 +52,7 @@ class UserController extends Controller
 
         $users = $query->orderBy('full_name')->paginate(15)->withQueryString();
 
-        if (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        if (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             $units = Unit::where('id', $currentUser->unit_id)->get();
         } else {
             $units = Unit::orderBy('name')->get();
@@ -72,7 +72,7 @@ class UserController extends Controller
             ];
             $units = Unit::orderBy('name')->get();
 
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             $availableRoles = [
                 'user' => '👤 User',
             ];
@@ -90,7 +90,7 @@ class UserController extends Controller
         /** @var User $currentUser */
         $currentUser = Auth::user();
 
-        if (!in_array($currentUser->role, ['admin_ga', 'kepala_departemen', 'admin_akuntansi'])) {
+        if (!in_array($currentUser->role, ['admin_ga', 'kepala_departemen', 'admin_hr'])) {
             abort(403, 'Anda tidak memiliki izin untuk menambah user.');
         }
 
@@ -122,7 +122,7 @@ class UserController extends Controller
                     ->with('error', 'Unit ini sudah memiliki Kepala Departemen!');
             }
 
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             if ($validated['role'] !== 'user') {
                 return back()->withInput()
                     ->with('error', 'Anda hanya bisa membuat User biasa!');
@@ -181,7 +181,7 @@ class UserController extends Controller
             if ($user->role !== 'kepala_departemen') {
                 abort(403, 'Anda hanya bisa melihat Kepala Departemen.');
             }
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             // ✅ FIX BUG #2: cast ke int
             if ((int)$user->unit_id !== (int)$currentUser->unit_id || $user->role !== 'user') {
                 abort(403, 'Anda tidak memiliki izin untuk melihat user ini.');
@@ -209,7 +209,7 @@ class UserController extends Controller
             $availableRoles = ['kepala_departemen' => '👔 Kepala Departemen'];
             $units = Unit::orderBy('name')->get();
 
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             // ✅ FIX BUG #2: cast ke int
             if ((int)$user->unit_id !== (int)$currentUser->unit_id || $user->role !== 'user') {
                 abort(403, 'Anda tidak memiliki izin untuk mengedit user ini.');
@@ -233,7 +233,7 @@ class UserController extends Controller
             if ($user->role !== 'kepala_departemen') {
                 abort(403, 'Anda hanya bisa mengedit Kepala Departemen.');
             }
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             // ✅ FIX BUG #2: cast ke int
             if ((int)$user->unit_id !== (int)$currentUser->unit_id || $user->role !== 'user') {
                 abort(403, 'Anda tidak memiliki izin untuk mengedit user ini.');
@@ -274,7 +274,7 @@ class UserController extends Controller
                 }
             }
 
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             if ($validated['role'] !== 'user') {
                 return back()->withInput()
                     ->with('error', 'Anda hanya bisa mengelola User biasa!');
@@ -335,7 +335,7 @@ class UserController extends Controller
             if ($user->role !== 'kepala_departemen') {
                 abort(403, 'Anda hanya bisa menghapus Kepala Departemen.');
             }
-        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_akuntansi'])) {
+        } elseif (in_array($currentUser->role, ['kepala_departemen', 'admin_hr'])) {
             // ✅ FIX BUG #2: cast ke int
             if ((int)$user->unit_id !== (int)$currentUser->unit_id || $user->role !== 'user') {
                 abort(403, 'Anda tidak memiliki izin untuk menghapus user ini.');

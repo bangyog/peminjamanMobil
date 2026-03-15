@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <a href="{{ route('approvals.akuntansi.index') }}"
+                <a href="{{ route('approvals.hr.index') }}"
                    class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -12,11 +12,11 @@
                     <h2 class="font-bold text-xl text-gray-800 leading-tight">
                         Verifikasi Pengajuan #{{ $loanRequest->id }}
                     </h2>
-                    <p class="text-sm text-gray-500 mt-0.5">Approval Level: Admin Akuntansi</p>
+                    <p class="text-sm text-gray-500 mt-0.5">Approval Level: Admin HR</p>
                 </div>
             </div>
             <span class="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
-                ✅ Sudah Disetujui Kepala — Menunggu Akuntansi
+                ✅ Sudah Disetujui Kepala — Menunggu HR
             </span>
         </div>
     </x-slot>
@@ -208,10 +208,10 @@
                 </div>
             </div>
 
-            {{-- ========================= FORM KEPUTUSAN AKUNTANSI ========================= --}}
+            {{-- ========================= FORM KEPUTUSAN HR ========================= --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
-                    <h3 class="font-bold text-gray-800">Keputusan Admin Akuntansi</h3>
+                    <h3 class="font-bold text-gray-800">Keputusan Admin HR</h3>
                     <p class="text-xs text-gray-500 mt-0.5">
                         Tanda tangan <span class="text-red-500 font-semibold">wajib</span> diisi sebelum menyetujui.
                         Setelah disetujui, pengajuan diteruskan ke Admin GA.
@@ -260,7 +260,7 @@
                     </div>
 
                     {{-- FORM SETUJUI --}}
-                    <form action="{{ route('approvals.akuntansi.approve', $loanRequest) }}"
+                    <form action="{{ route('approvals.hr.approve', $loanRequest) }}"
                           method="POST" id="approveForm">
                         @csrf
                         <input type="hidden" name="signature" id="signatureInput">
@@ -298,7 +298,7 @@
                         </button>
 
                         <div x-show="open" x-transition class="mt-3">
-                            <form action="{{ route('approvals.akuntansi.reject', $loanRequest) }}" method="POST">
+                            <form action="{{ route('approvals.hr.reject', $loanRequest) }}" method="POST">
                                 @csrf
                                 <div class="p-4 bg-red-50 border border-red-200 rounded-xl space-y-3">
                                     <label class="block text-sm font-semibold text-red-700">

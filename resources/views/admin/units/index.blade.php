@@ -152,22 +152,7 @@
             </div>
         </div>
 
-        {{-- Tidak Aktif --}}
-        <div class="bg-white rounded-2xl p-5 hover:shadow-md transition"
-            style="box-shadow:0 2px 12px rgba(0,0,0,0.05); border:1px solid #fecaca;">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">Tidak Aktif</p>
-                    <p class="text-3xl font-extrabold text-red-500 mt-1">{{ $stats['inactive'] }}</p>
-                    <p class="text-xs text-gray-400 mt-1">Dinonaktifkan</p>
-                </div>
-                <div class="p-3 rounded-xl" style="background:linear-gradient(135deg,#fef2f2,#fecaca);">
-                    <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
+
 
         {{-- Punya Kepala --}}
         <div class="bg-white rounded-2xl p-5 hover:shadow-md transition"
@@ -383,18 +368,7 @@
                         <td class="px-5 py-3.5 whitespace-nowrap">
                             <div class="flex items-center justify-end gap-2">
 
-                                {{-- Detail --}}
-                                <a href="{{ route('admin.units.show', $unit) }}"
-                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all"
-                                    style="background:#f8fafc; color:#475569; border:1px solid #e2e8f0;"
-                                    onmouseover="this.style.background='#e2e8f0';"
-                                    onmouseout="this.style.background='#f8fafc';"
-                                    title="Lihat Detail">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                    Detail
-                                </a>
+
 
                                 {{-- Edit --}}
                                 <a href="{{ route('admin.units.edit', $unit) }}"

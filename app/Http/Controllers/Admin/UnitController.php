@@ -230,7 +230,7 @@ class UnitController extends Controller
         $this->getAuthUser()->isAdminGA() ?: abort(403);
 
         if ($unit->users()->exists()) {
-            return back()->with('error', 'Tidak dapat menghapus unit yang memiliki user! Nonaktifkan saja.');
+            return back()->with('error', 'Tidak dapat menghapus unit yang memiliki user! .');
         }
 
         if ($unit->loanRequests()->exists()) {

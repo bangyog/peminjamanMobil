@@ -11,7 +11,7 @@
             class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-lg transition flex-shrink-0"
             style="background: linear-gradient(135deg, #0052A3, #0066CC);">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
             </svg>
             Tambah User
         </a>
@@ -29,7 +29,7 @@
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
                         </div>
                         <input type="text" name="search" value="{{ request('search') }}"
@@ -39,7 +39,7 @@
                     </div>
                 </div>
 
-
+ 
 
                 {{-- Status --}}
                 <div>
@@ -47,14 +47,14 @@
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                         </div>
                         <select name="status"
                             class="w-full pl-9 pr-8 py-2.5 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none"
                             style="border-color:#e2e8f0; background:#fafbff;">
                             <option value="">Semua Status</option>
-                            <option value="active" {{ request('status') === 'active'   ? 'selected' : '' }}>✅ Aktif</option>
+                            <option value="active"   {{ request('status') === 'active'   ? 'selected' : '' }}>✅ Aktif</option>
                             <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>❌ Nonaktif</option>
                         </select>
                     </div>
@@ -68,7 +68,7 @@
                     class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl transition"
                     style="background: linear-gradient(135deg, #0052A3, #0066CC);">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                     Terapkan Filter
                 </button>
@@ -77,7 +77,7 @@
                     class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl transition"
                     style="background:#f1f5f9; color:#64748b;">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                     Reset
                 </a>
@@ -125,7 +125,7 @@
                 <div class="w-7 h-7 rounded-lg flex items-center justify-center"
                     style="background: linear-gradient(135deg, #0052A3, #0066CC);">
                     <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                 </div>
                 <span class="text-sm font-bold text-gray-700">Daftar User</span>
@@ -151,22 +151,24 @@
                 <tbody>
                     @forelse($users as $user)
                     @php
-                    $initials = strtoupper(substr($user->full_name, 0, 2));
-                    $avatarColors = [
-                    ['bg' => '#dbeafe', 'text' => '#1d4ed8'],
-                    ['bg' => '#dcfce7', 'text' => '#15803d'],
-                    ['bg' => '#ede9fe', 'text' => '#6d28d9'],
-                    ['bg' => '#fce7f3', 'text' => '#be185d'],
-                    ['bg' => '#ffedd5', 'text' => '#c2410c'],
-                    ['bg' => '#e0f2fe', 'text' => '#0369a1'],
-                    ];
-                    $avatarColor = $avatarColors[crc32($user->full_name) % count($avatarColors)];
-                    $roleCfg = match($user->role) {
-                    'admin' => ['bg-purple-50 text-purple-700 border border-purple-200', '👑 Admin'],
-                    'ga' => ['bg-indigo-50 text-indigo-700 border border-indigo-200', '🏢 Admin GA'],
-                    'kepala' => ['bg-blue-50 text-blue-700 border border-blue-200', '🎖️ Kepala Dept'],
-                    default => ['bg-slate-50 text-slate-600 border border-slate-200', '👤 User'],
-                    };
+                        $initials = strtoupper(substr($user->full_name, 0, 2));
+                        $avatarColors = [
+                            ['bg' => '#dbeafe', 'text' => '#1d4ed8'],
+                            ['bg' => '#dcfce7', 'text' => '#15803d'],
+                            ['bg' => '#ede9fe', 'text' => '#6d28d9'],
+                            ['bg' => '#fce7f3', 'text' => '#be185d'],
+                            ['bg' => '#ffedd5', 'text' => '#c2410c'],
+                            ['bg' => '#e0f2fe', 'text' => '#0369a1'],
+                        ];
+                        $avatarColor = $avatarColors[crc32($user->full_name) % count($avatarColors)];
+
+$roleCfg = match($user->role) {
+    'admin_ga'          => ['bg-indigo-50 text-indigo-700 border border-indigo-200',   '🏢 Admin GA'],
+    'admin_hr'          => ['bg-purple-50 text-purple-700 border border-purple-200',   '🧑‍💼 Admin HR'],
+    'kepala_departemen' => ['bg-blue-50 text-blue-700 border border-blue-200',         '🎖️ Kepala Dept'],
+    'user'              => ['bg-slate-50 text-slate-600 border border-slate-200',      '👤 User'],
+    default             => ['bg-gray-50 text-gray-500 border border-gray-200',         $user->role],
+};
                     @endphp
                     <tr class="hover:bg-blue-50/30 transition-colors" style="border-bottom:1px solid #f8fafc;">
 
@@ -181,7 +183,7 @@
                                     <p class="text-sm font-bold text-gray-800">{{ $user->full_name }}</p>
                                     <p class="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                         </svg>
                                         {{ $user->email }}
                                     </p>
@@ -195,7 +197,7 @@
                             <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg"
                                 style="background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd;">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                 </svg>
                                 {{ $user->unit->name }}
                             </span>
@@ -209,7 +211,7 @@
                             @if($user->phone)
                             <p class="text-sm text-gray-700 flex items-center gap-1">
                                 <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                                 </svg>
                                 {{ $user->phone }}
                             </p>
@@ -253,7 +255,7 @@
                                     onmouseover="this.style.background='#1d4ed8'; this.style.color='#fff'; this.style.borderColor='#1d4ed8';"
                                     onmouseout="this.style.background='#eff6ff'; this.style.color='#1d4ed8'; this.style.borderColor='#bfdbfe';">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                     Edit
                                 </a>
@@ -271,7 +273,7 @@
                                     onmouseover="this.style.background='#dc2626'; this.style.color='#fff'; this.style.borderColor='#dc2626';"
                                     onmouseout="this.style.background='#fef2f2'; this.style.color='#dc2626'; this.style.borderColor='#fecaca';">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
                                     Hapus
                                 </button>
@@ -280,7 +282,7 @@
                                     style="background:linear-gradient(135deg,#eff6ff,#dbeafe); color:#3b82f6; border:1px solid #bfdbfe;"
                                     title="Tidak dapat menghapus akun Anda sendiri">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     </svg>
                                     Anda
                                 </div>
@@ -296,15 +298,15 @@
                                 <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
                                     style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">
                                     <svg class="w-8 h-8 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                     </svg>
                                 </div>
                                 <p class="font-bold text-gray-500 text-base">Tidak ada user ditemukan</p>
                                 <p class="text-sm text-gray-400 mt-1 max-w-xs">
                                     @if(request('search') || request('role') || request('unit_id') || request('status'))
-                                    Coba ubah kata kunci atau filter yang digunakan
+                                        Coba ubah kata kunci atau filter yang digunakan
                                     @else
-                                    Belum ada user yang terdaftar di sistem
+                                        Belum ada user yang terdaftar di sistem
                                     @endif
                                 </p>
                                 @if(request('search') || request('role') || request('unit_id') || request('status'))
@@ -312,7 +314,7 @@
                                     class="inline-flex items-center gap-2 mt-4 px-4 py-2 text-sm font-semibold rounded-xl"
                                     style="background:#f1f5f9; color:#475569;">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                     </svg>
                                     Reset Filter
                                 </a>
@@ -321,7 +323,7 @@
                                     class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 text-sm font-bold text-white rounded-xl"
                                     style="background:linear-gradient(135deg,#0052A3,#0066CC);">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                                     </svg>
                                     Tambah User Pertama
                                 </a>
@@ -366,7 +368,8 @@
             x-transition:leave-end="opacity-0"
             class="fixed inset-0 z-40"
             style="background:rgba(15,23,42,0.5); backdrop-filter:blur(3px);"
-            x-cloak></div>
+            x-cloak
+        ></div>
 
         {{-- Modal --}}
         <div
@@ -379,7 +382,8 @@
             x-transition:leave-end="opacity-0 scale-95 translate-y-3"
             class="fixed inset-0 z-50 flex items-center justify-center p-4"
             @keydown.escape.window="isOpen = false"
-            x-cloak>
+            x-cloak
+        >
             <div class="w-full max-w-sm rounded-2xl overflow-hidden"
                 style="background:#fff; box-shadow:0 25px 60px rgba(0,0,0,0.2);"
                 @click.outside="isOpen = false">
@@ -396,7 +400,7 @@
                                 style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">
                                 <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </div>
                             {{-- Warning badge --}}
@@ -445,7 +449,7 @@
                             onmouseout="this.style.boxShadow='0 4px 14px rgba(220,38,38,0.35)'; this.style.transform='translateY(0)';">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>
                             Ya, Hapus
                         </button>
@@ -455,7 +459,7 @@
                     {{-- Disclaimer --}}
                     <p class="text-xs text-gray-400 text-center mt-4 flex items-center justify-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         Tekan <kbd class="mx-1 px-1.5 py-0.5 rounded text-xs font-mono" style="background:#f1f5f9; border:1px solid #e2e8f0;">Esc</kbd> untuk membatalkan
                     </p>
@@ -481,13 +485,13 @@
     <script>
         function deleteUserModal() {
             return {
-                isOpen: false,
+                isOpen:  false,
                 userName: '',
-                formId: '',
+                formId:   '',
                 open(detail) {
                     this.userName = detail.name;
-                    this.formId = detail.formId;
-                    this.isOpen = true;
+                    this.formId   = detail.formId;
+                    this.isOpen   = true;
                     // fokus ke tombol konfirmasi setelah animasi
                     setTimeout(() => this.$refs.confirmBtn?.focus(), 250);
                 },
@@ -501,18 +505,10 @@
 
     <style>
         @keyframes shimmer {
-            0% {
-                background-position: 200% center;
-            }
-
-            100% {
-                background-position: -200% center;
-            }
+            0%   { background-position: 200% center; }
+            100% { background-position: -200% center; }
         }
-
-        [x-cloak] {
-            display: none !important;
-        }
+        [x-cloak] { display: none !important; }
     </style>
 
 </x-app-layout>

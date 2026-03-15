@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="font-bold text-xl text-gray-800 leading-tight">Verifikasi Admin Akuntansi</h2>
+                <h2 class="font-bold text-xl text-gray-800 leading-tight">Verifikasi Admin HR</h2>
                 <p class="text-sm text-gray-500 mt-0.5">Pengajuan yang sudah disetujui Kepala, menunggu verifikasi Anda</p>
             </div>
             <span class="text-xs text-gray-400">{{ now()->translatedFormat('l, d F Y') }}</span>
@@ -42,7 +42,7 @@
                 <div class="text-sm text-blue-700">
                     <p class="font-semibold mb-0.5">Alur Persetujuan:</p>
                     <p>Pengajuan di bawah ini sudah disetujui oleh <strong>Kepala Departemen</strong> (status: <code class="bg-blue-100 px-1 rounded text-xs">approved_kepala</code>)
-                    dan sekarang perlu verifikasi dari Admin Akuntansi sebelum diteruskan ke Admin GA.</p>
+                    dan sekarang perlu verifikasi dari Admin HR sebelum diteruskan ke Admin GA.</p>
                 </div>
             </div>
 
@@ -117,7 +117,7 @@
 
                         {{-- Footer --}}
                         <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 flex justify-end gap-2">
-                            <a href="{{ route('approvals.akuntansi.approve.form', $req) }}"
+                            <a href="{{ route('approvals.hr.approve.form', $req) }}"
                                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition">
                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>

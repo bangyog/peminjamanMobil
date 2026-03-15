@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">Dashboard Admin GA</x-slot>
 
-    {{-- ===== FLASH SUCCESS ===== --}}
     @if(session('success'))
     <div x-data="{ show: true }" x-show="show" x-transition
         class="mb-5 flex items-center justify-between gap-3 px-4 py-3 rounded-2xl text-sm font-semibold"
@@ -20,7 +19,6 @@
     </div>
     @endif
 
-    {{-- Ganti seluruh PAGE HERO BAR --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
         <div>
             <h1 class="text-lg sm:text-xl font-extrabold text-gray-800 leading-tight">Dashboard Admin GA</h1>
@@ -28,7 +26,6 @@
                 Selamat datang, <span class="font-semibold text-gray-600">{{ Auth::user()->full_name }}</span>
             </p>
         </div>
-        {{-- Tanggal tampil di mobile di sini --}}
         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full self-start sm:self-auto"
             style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;">
             <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
@@ -36,8 +33,7 @@
         </span>
     </div>
 
-
-    {{-- ========================= STATS UTAMA ========================= --}}
+    {{-- ===== STATS UTAMA — 4 kartu ===== --}}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
         {{-- Menunggu Kepala --}}
@@ -57,7 +53,27 @@
             </div>
         </div>
 
-
+        {{-- ✅ FIX: Perlu Approve GA — kartu yang hilang --}}
+        <div class="bg-white rounded-2xl p-5 hover:shadow-md transition relative overflow-hidden"
+            style="box-shadow:0 2px 12px rgba(0,0,0,0.05); border:1px solid #fed7aa;">
+            @if($stats['need_ga_approve'] > 0)
+            <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500 animate-ping"></div>
+            @endif
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">Perlu Approve GA</p>
+                    <p class="text-3xl font-extrabold text-orange-500 mt-1">{{ $stats['need_ga_approve'] }}</p>
+                    <p class="text-xs {{ $stats['need_ga_approve'] > 0 ? 'text-orange-500 font-semibold' : 'text-gray-400' }} mt-1">
+                        {{ $stats['need_ga_approve'] > 0 ? '⚡ Menunggu tindakan' : 'Semua diproses' }}
+                    </p>
+                </div>
+                <div class="p-3 rounded-xl" style="background:linear-gradient(135deg,#ffedd5,#fed7aa);">
+                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
 
         {{-- Perlu Penugasan --}}
         <div class="bg-white rounded-2xl p-5 hover:shadow-md transition relative overflow-hidden"
@@ -100,7 +116,7 @@
 
     </div>
 
-    {{-- ========================= STATUS ARMADA ========================= --}}
+    {{-- ===== STATUS ARMADA ===== --}}
     <div class="bg-white rounded-2xl p-5 mb-6"
         style="box-shadow:0 2px 12px rgba(0,0,0,0.05); border:1px solid #f0f4ff;">
         <div class="flex items-center justify-between mb-4">
@@ -128,10 +144,10 @@
         @php
         $totalVehicles = ($vehicleStats['available'] + $vehicleStats['in_use'] + $vehicleStats['maintenance'] + $vehicleStats['retired']) ?: 1;
         $armadaConfig = [
-        ['label' => 'Tersedia', 'key' => 'available', 'icon' => '✅', 'bg' => '#f0fdf4', 'border' => '#86efac', 'text' => '#15803d', 'bar' => '#22c55e'],
-        ['label' => 'Digunakan', 'key' => 'in_use', 'icon' => '🔄', 'bg' => '#eff6ff', 'border' => '#93c5fd', 'text' => '#1d4ed8', 'bar' => '#3b82f6'],
-        ['label' => 'Maintenance', 'key' => 'maintenance', 'icon' => '🔧', 'bg' => '#fffbeb', 'border' => '#fde68a', 'text' => '#92400e', 'bar' => '#f59e0b'],
-        ['label' => 'Pensiunan', 'key' => 'retired', 'icon' => '🚫', 'bg' => '#f8fafc', 'border' => '#e2e8f0', 'text' => '#475569', 'bar' => '#94a3b8'],
+            ['label'=>'Tersedia',    'key'=>'available',   'icon'=>'✅', 'bg'=>'#f0fdf4', 'border'=>'#86efac', 'text'=>'#15803d', 'bar'=>'#22c55e'],
+            ['label'=>'Digunakan',   'key'=>'in_use',      'icon'=>'🔄', 'bg'=>'#eff6ff', 'border'=>'#93c5fd', 'text'=>'#1d4ed8', 'bar'=>'#3b82f6'],
+            ['label'=>'Maintenance', 'key'=>'maintenance', 'icon'=>'🔧', 'bg'=>'#fffbeb', 'border'=>'#fde68a', 'text'=>'#92400e', 'bar'=>'#f59e0b'],
+            ['label'=>'Pensiunan',   'key'=>'retired',     'icon'=>'🚫', 'bg'=>'#f8fafc', 'border'=>'#e2e8f0', 'text'=>'#475569', 'bar'=>'#94a3b8'],
         ];
         @endphp
 
@@ -154,8 +170,95 @@
         </div>
     </div>
 
+    {{-- ===== ✅ FIX: PERLU APPROVE GA (needGaApproval) — section yang hilang ===== --}}
+    @if($needGaApproval->count() > 0)
+    <div class="rounded-2xl overflow-hidden mb-6"
+        style="box-shadow:0 4px 20px rgba(234,88,12,0.1); border:1.5px solid #fed7aa;">
 
-    {{-- ========================= PERLU ASSIGN KENDARAAN ========================= --}}
+        <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+            style="background:linear-gradient(135deg,#fff7ed,#ffedd5); border-bottom:1px solid #fed7aa;">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center"
+                        style="background:linear-gradient(135deg,#ea580c,#f97316);">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-400 animate-ping"></span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-orange-900">Perlu Persetujuan Admin GA</h3>
+                    <p class="text-xs text-orange-600">{{ $needGaApproval->count() }} pengajuan sudah disetujui Kepala, menunggu GA</p>
+                </div>
+            </div>
+            <span class="inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0"
+                style="background:#fff; color:#ea580c; border:1.5px solid #fdba74;">
+                ✅ approved_kepala
+            </span>
+        </div>
+
+        <div class="hidden sm:block overflow-x-auto bg-white">
+            <table class="min-w-full">
+                <thead>
+                    <tr style="background:#fafbff; border-bottom:1px solid #f0f4ff;">
+                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Pemohon</th>
+                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Keperluan</th>
+                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tujuan</th>
+                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Berangkat</th>
+                        <th class="px-5 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($needGaApproval as $req)
+                    <tr class="hover:bg-orange-50/30 transition" style="border-bottom:1px solid #f8fafc;">
+                        <td class="px-5 py-3.5 whitespace-nowrap">
+                            <p class="text-sm font-bold text-gray-800">{{ $req->requester->full_name ?? '-' }}</p>
+                            <p class="text-xs text-gray-400">{{ $req->requester->unit->name ?? '' }}</p>
+                        </td>
+                        <td class="px-5 py-3.5 text-sm text-gray-700">{{ Str::limit($req->purpose, 35) }}</td>
+                        <td class="px-5 py-3.5 text-sm text-gray-500">{{ Str::limit($req->destination, 30) }}</td>
+                        <td class="px-5 py-3.5 text-sm text-gray-600 whitespace-nowrap">
+                            {{ $req->depart_at?->format('d M Y H:i') ?? '-' }}
+                        </td>
+                        <td class="px-5 py-3.5 whitespace-nowrap text-right">
+                            <a href="{{ route('admin.loan-requests.show', $req) }}"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white rounded-xl transition-all duration-150"
+                                style="background:linear-gradient(135deg,#ea580c,#f97316); box-shadow:0 3px 10px rgba(234,88,12,0.3);"
+                                onmouseover="this.style.boxShadow='0 5px 16px rgba(234,88,12,0.45)'; this.style.transform='translateY(-1px)';"
+                                onmouseout="this.style.boxShadow='0 3px 10px rgba(234,88,12,0.3)'; this.style.transform='translateY(0)';">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Review & Approve
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Mobile cards --}}
+        <div class="sm:hidden bg-white divide-y" style="border-color:#f8fafc;">
+            @foreach($needGaApproval as $req)
+            <a href="{{ route('admin.loan-requests.show', $req) }}"
+                class="flex items-start gap-3 px-4 py-4 hover:bg-orange-50/30 transition">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-gray-800">{{ $req->requester->full_name ?? '-' }}</p>
+                    <p class="text-xs text-gray-400">{{ $req->requester->unit->name ?? '' }} · {{ $req->depart_at?->format('d M Y') ?? '-' }}</p>
+                    <p class="text-xs text-gray-600 mt-1 truncate">{{ Str::limit($req->purpose, 45) }}</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    {{-- ===== PERLU ASSIGN KENDARAAN ===== --}}
     @if($needAssignment->count() > 0)
     <div class="rounded-2xl overflow-hidden mb-6"
         style="box-shadow:0 4px 20px rgba(109,40,217,0.1); border:1.5px solid #ddd6fe;">
@@ -183,7 +286,6 @@
             </span>
         </div>
 
-        {{-- Desktop table --}}
         <div class="hidden sm:block overflow-x-auto bg-white">
             <table class="min-w-full">
                 <thead>
@@ -234,7 +336,6 @@
             </table>
         </div>
 
-        {{-- Mobile cards --}}
         <div class="sm:hidden bg-white divide-y" style="border-color:#f8fafc;">
             @foreach($needAssignment as $req)
             <div class="px-4 py-4">
@@ -264,7 +365,7 @@
     </div>
     @endif
 
-    {{-- ========================= PENGAJUAN MASUK ========================= --}}
+    {{-- ===== PENGAJUAN MASUK (submitted) ===== --}}
     <div class="bg-white rounded-2xl overflow-hidden mb-6"
         style="box-shadow:0 2px 12px rgba(0,0,0,0.05); border:1px solid #f0f4ff;">
 
@@ -293,8 +394,6 @@
         </div>
 
         @if($pendingRequests->count() > 0)
-
-        {{-- Desktop table --}}
         <div class="hidden sm:block overflow-x-auto">
             <table class="min-w-full">
                 <thead>
@@ -339,8 +438,6 @@
                 </tbody>
             </table>
         </div>
-
-        {{-- Mobile cards --}}
         <div class="sm:hidden divide-y" style="border-color:#f8fafc;">
             @foreach($pendingRequests as $req)
             <a href="{{ route('admin.loan-requests.show', $req) }}"
@@ -357,7 +454,6 @@
             </a>
             @endforeach
         </div>
-
         @else
         <div class="py-12 flex flex-col items-center justify-center text-center">
             <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-3"
@@ -371,7 +467,7 @@
         @endif
     </div>
 
-    {{-- ========================= PEMINJAMAN AKTIF ========================= --}}
+    {{-- ===== PEMINJAMAN AKTIF ===== --}}
     @if($activeLoans->count() > 0)
     <div class="bg-white rounded-2xl overflow-hidden"
         style="box-shadow:0 2px 12px rgba(0,0,0,0.05); border:1px solid #bfdbfe;">
@@ -395,7 +491,6 @@
                 style="background:#fff; color:#1d4ed8; border:1.5px solid #93c5fd;">in_use</span>
         </div>
 
-        {{-- Desktop table --}}
         <div class="hidden sm:block overflow-x-auto">
             <table class="min-w-full">
                 <thead>
@@ -410,7 +505,7 @@
                 <tbody>
                     @foreach($activeLoans as $req)
                     @php $isOverdue = $req->expected_return_at && $req->expected_return_at->isPast(); @endphp
-                    <tr class="hover:bg-blue-50/20 transition {{ $isOverdue ? '' : '' }}"
+                    <tr class="hover:bg-blue-50/20 transition"
                         style="border-bottom:1px solid #f8fafc; {{ $isOverdue ? 'background:#fef9f9;' : '' }}">
                         <td class="px-5 py-3.5 whitespace-nowrap">
                             <p class="text-sm font-bold text-gray-800">{{ $req->requester->full_name ?? '-' }}</p>
@@ -458,7 +553,6 @@
             </table>
         </div>
 
-        {{-- Mobile cards --}}
         <div class="sm:hidden divide-y" style="border-color:#f8fafc;">
             @foreach($activeLoans as $req)
             @php $isOverdue = $req->expected_return_at && $req->expected_return_at->isPast(); @endphp

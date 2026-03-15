@@ -17,7 +17,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ReturnExpense;
 use App\Models\ReturnAttachment;
 use App\Models\User;
-use App\Notifications\LoanNotification; // ✅ Tetap dipakai
+use App\Notifications\LoanNotification;
 
 class LoanRequestController extends Controller
 {
@@ -61,7 +61,7 @@ class LoanRequestController extends Controller
             $query->where('status', $request->status);
         }
 
-        $base = LoanRequest::where('requester_id', Auth::id());
+        $base  = LoanRequest::where('requester_id', Auth::id());
         $stats = [
             'pending'   => (clone $base)->where('status', 'submitted')->count(),
             'approved'  => (clone $base)->whereIn('status', ['approved_kepala', 'approved_ga', 'assigned'])->count(),
@@ -96,8 +96,8 @@ class LoanRequestController extends Controller
             'unit_id'                => 'required|exists:units,id',
             'purpose'                => 'required|string|max:255',
             'destination'            => 'nullable|string|max:255',
-            'projek'                 => 'nullable|string|max:255', 
-            'anggaran_awal'          => 'nullable|string|max:255', 
+            'projek'                 => 'nullable|string|max:255',
+            'anggaran_awal'          => 'nullable|string|max:255',
             'siap_di'                => 'nullable|string|max:255',
             'kembali_di'             => 'nullable|string|max:255',
             'request_city'           => 'nullable|string|max:100',
@@ -114,10 +114,7 @@ class LoanRequestController extends Controller
         DB::beginTransaction();
         try {
             $signaturePath = null;
-            if (
-                $request->requester_signature
-                && str_starts_with($request->requester_signature, 'data:image')
-            ) {
+            if ($request->requester_signature && str_starts_with($request->requester_signature, 'data:image')) {
                 $signaturePath = $this->saveSignature(
                     $request->requester_signature,
                     'requester_signature',
@@ -133,12 +130,12 @@ class LoanRequestController extends Controller
                 'purpose'                => $request->purpose,
                 'destination'            => $request->destination,
                 'projek'                 => $request->projek,
-                'anggaran_awal'          => $request->anggaran_awal, 
+                'anggaran_awal'          => $request->anggaran_awal,
                 'siap_di'                => $request->siap_di,
                 'kembali_di'             => $request->kembali_di,
                 'requested_vehicle_text' => $request->requested_vehicle_text,
                 'notes'                  => $request->notes,
-                'driver'                 => $request->driver,
+                'driver' => $request->boolean('driver', false),
                 'requester_signature'    => $signaturePath,
                 'depart_at'              => $request->depart_at,
                 'expected_return_at'     => $request->expected_return_at,
@@ -169,39 +166,26 @@ class LoanRequestController extends Controller
 
             DB::commit();
 
-            // ✅ Notifikasi — cek apakah unit ini adalah unit Akuntansi
-            $isAkuntansiUnit = User::where('unit_id', $loanRequest->unit_id)
-                ->where('role', 'admin_akuntansi')
-                ->exists();
+            // ✅ Notifikasi: kirim ke Kepala Departemen DAN Admin HR di unit tersebut
+            // Keduanya punya approval level 1 — siapapun yang ada di unit itu
+            $approvers = User::where('unit_id', $loanRequest->unit_id)
+                ->whereIn('role', ['kepala_departemen', 'admin_hr'])
+                ->where('is_active', true)
+                ->get();
 
-            if ($isAkuntansiUnit) {
-                // ✅ Unit Akuntansi → notify Admin Akuntansi
-                $adminAkuntansiList = User::where('unit_id', $loanRequest->unit_id)
-                    ->where('role', 'admin_akuntansi')
-                    ->get();
-                foreach ($adminAkuntansiList as $admin) {
-                    $this->sendNotification(
-                        $admin,
-                        'Pengajuan Baru Menunggu Persetujuan',
-                        'Pengajuan #' . $loanRequest->id . ' dari ' . Auth::user()->full_name . ' ke ' . ($loanRequest->destination ?? '-') . ' menunggu persetujuan kamu.',
-                        route('approvals.akuntansi.index'),
-                        'info'
-                    );
-                }
-            } else {
-                // ✅ Unit lain → notify Kepala Departemen unit tersebut
-                $kepalaList = User::where('unit_id', $loanRequest->unit_id)
-                    ->where('role', 'kepala_departemen')
-                    ->get();
-                foreach ($kepalaList as $kepala) {
-                    $this->sendNotification(
-                        $kepala,
-                        'Pengajuan Baru Menunggu Persetujuan',
-                        'Pengajuan #' . $loanRequest->id . ' dari ' . Auth::user()->full_name . ' ke ' . ($loanRequest->destination ?? '-') . ' menunggu persetujuan kamu.',
-                        route('approvals.kepala.index'),
-                        'info'
-                    );
-                }
+            foreach ($approvers as $approver) {
+                $route = $approver->isAdminHR()
+                    ? route('approvals.hr.index')
+                    : route('approvals.kepala.index');
+
+                $this->sendNotification(
+                    $approver,
+                    'Pengajuan Baru Menunggu Persetujuan',
+                    'Pengajuan #' . $loanRequest->id . ' dari ' . Auth::user()->full_name
+                        . ' ke ' . ($loanRequest->destination ?? '-') . ' menunggu persetujuan kamu.',
+                    $route,
+                    'info'
+                );
             }
 
             return redirect()->route('loan-requests.show', $loanRequest)
@@ -246,8 +230,7 @@ class LoanRequestController extends Controller
                 ->with('error', 'Pengajuan ini tidak dapat diedit karena sudah diproses.');
         }
 
-        $units = Unit::where('is_active', 1)->orderBy('name')->get();
-
+        $units    = Unit::where('is_active', 1)->orderBy('name')->get();
         $vehicles = Vehicle::where('status', 'available')
             ->orWhere('id', $loanRequest->preferred_vehicle_id)
             ->orderBy('brand')
@@ -303,15 +286,12 @@ class LoanRequestController extends Controller
                 'kembali_di'             => $request->kembali_di,
                 'requested_vehicle_text' => $request->requested_vehicle_text,
                 'notes'                  => $request->notes,
-                'driver'                 => $request->driver,
+                'driver' => $request->boolean('driver', false),
                 'depart_at'              => $request->depart_at,
                 'expected_return_at'     => $request->expected_return_at,
             ];
 
-            if (
-                $request->requester_signature
-                && str_starts_with($request->requester_signature, 'data:image')
-            ) {
+            if ($request->requester_signature && str_starts_with($request->requester_signature, 'data:image')) {
                 if ($loanRequest->requester_signature) {
                     Storage::disk('public')->delete($loanRequest->requester_signature);
                 }
@@ -421,11 +401,7 @@ class LoanRequestController extends Controller
                 ->with('error', 'Kendaraan belum atau sudah dikembalikan.');
         }
 
-        $loanRequest->load([
-            'requester',
-            'unit',
-            'assignment.assignedVehicle',
-        ]);
+        $loanRequest->load(['requester', 'unit', 'assignment.assignedVehicle']);
 
         return view('loan-requests.return', compact('loanRequest'));
     }
@@ -520,7 +496,6 @@ class LoanRequestController extends Controller
 
             DB::commit();
 
-            // ✅ Notif semua Admin GA bahwa kendaraan sudah dikembalikan
             $adminGAList = User::where('role', 'admin_ga')->get();
             foreach ($adminGAList as $adminGA) {
                 $this->sendNotification(
@@ -542,42 +517,40 @@ class LoanRequestController extends Controller
         }
     }
 
-// ============================================================
-// PDF — Download formulir PDF
-// ============================================================
-public function  exportPdf(LoanRequest $loanRequest)
-{
-    $loanRequest->load([
-        'requester',
-        'unit',
-        'vehicle',        // ✅ Ganti 'vehicle' → 'preferredVehicle' (sesuai FK preferred_vehicle_id)
-        'approvals.approver',
-        'assignment.assignedVehicle',
-        
-    ]);
-
-    $pdf = Pdf::loadView('loan-requests.pdf', compact('loanRequest'))
-        ->setPaper('a4', 'portrait')
-        ->setOptions([
-            'defaultFont'          => 'Calibri, sans-serif',
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled'      => true,   // ✅ WAJIB: agar DomPDF bisa load file signature dari storage
-            'chroot'               => storage_path('app/public'), // ✅ izinkan akses storage lokal
+    // ============================================================
+    // PDF — Download formulir PDF
+    // ============================================================
+    public function exportPdf(LoanRequest $loanRequest)
+    {
+        $loanRequest->load([
+            'requester',
+            'unit',
+            'vehicle',
+            'approvals.approver',
+            'assignment.assignedVehicle',
         ]);
 
-    $filename = 'Formulir_Pengajuan_' . $loanRequest->id . '_' . now()->format('Ymd') . '.pdf';
+        $pdf = Pdf::loadView('loan-requests.pdf', compact('loanRequest'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'defaultFont'          => 'Calibri, sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled'      => true,
+                'chroot'               => storage_path('app/public'),
+            ]);
 
-    return $pdf->download($filename);
-}
+        $filename = 'Formulir_Pengajuan_' . $loanRequest->id . '_' . now()->format('Ymd') . '.pdf';
 
+        return $pdf->download($filename);
+    }
 
     // ============================================================
     // PRIVATE HELPER — Simpan base64 signature ke storage
     // ============================================================
     private function saveSignature(string $base64, string $prefix, int $userId): string
     {
-        $parts    = explode(',', $base64);
-        $decoded  = base64_decode($parts[1]);
+        $parts   = explode(',', $base64);
+        $decoded = base64_decode($parts[1]);
         $filename = 'signatures/' . $prefix . '_' . $userId . '_' . time() . '.png';
 
         Storage::disk('public')->put($filename, $decoded);

@@ -4,11 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoanRequestController;
 use App\Http\Controllers\ApprovalController;
-use App\Http\Controllers\ReturnController;                                      // ✅ User side
+use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ReturnController as AdminReturnController;       // ✅ Admin side — alias!
+use App\Http\Controllers\Admin\ReturnController as AdminReturnController;
 use App\Http\Controllers\Admin\LoanRequestController as AdminLoanRequestController;
 use App\Http\Controllers\Admin\MonitoringController;
 use Illuminate\Support\Facades\Route;
@@ -37,20 +37,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // ✅ RETURN — user side (di luar prefix loan-requests!)
     Route::get('/loan-requests/{loanRequest}/return',
         [ReturnController::class, 'create'])
         ->name('returns.create');
 
     Route::post('/loan-requests/{loanRequest}/return',
-        [ReturnController::class, 'store'])                                     // ✅ bukan submitReturn
+        [ReturnController::class, 'store'])
         ->name('returns.store');
 
-    // Route::get('/returns/{vehicleReturn}',
-    //     [ReturnController::class, 'show'])
-    //     ->name('returns.show');
-
-    // Loan Requests — tambahan routes (sebelum resource!)
     Route::prefix('loan-requests')->name('loan-requests.')->group(function () {
         Route::delete('/{loanRequest}/attachments/{attachment}',
             [LoanRequestController::class, 'deleteAttachment'])
@@ -62,26 +56,18 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::resource('loan-requests', LoanRequestController::class);
 
-    // Profile
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('/', [ProfileController::class, 'update'])->name('update');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
     });
 
-        // Halaman semua notifikasi
     Route::get('/notifications', [NotificationController::class, 'index'])
         ->name('notifications.index');
-
-    // Fetch untuk bell icon (AJAX)
     Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])
         ->name('notifications.fetch');
-
-    // Mark semua dibaca
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
         ->name('notifications.readAll');
-
-    // Mark satu notif dibaca
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
         ->name('notifications.read');
 });
@@ -128,22 +114,22 @@ Route::middleware(['auth', 'role:admin_ga'])
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN AKUNTANSI — APPROVAL
+| ADMIN HR — APPROVAL                              ✅ ganti dari admin_akuntansi
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin_akuntansi'])
+Route::middleware(['auth', 'role:admin_hr'])                           // ✅ admin_hr
     ->prefix('approvals')
     ->name('approvals.')
     ->group(function () {
 
-    Route::get('/pending-akuntansi', [ApprovalController::class, 'indexAkuntansi'])
-        ->name('akuntansi.index');
-    Route::get('/akuntansi/{loanRequest}/approve', [ApprovalController::class, 'showApproveFormAkuntansi'])
-        ->name('akuntansi.approve.form');
-    Route::post('/akuntansi/{loanRequest}/approve', [ApprovalController::class, 'approveAkuntansi'])
-        ->name('akuntansi.approve');
-    Route::post('/akuntansi/{loanRequest}/reject', [ApprovalController::class, 'rejectAkuntansi'])
-        ->name('akuntansi.reject');
+    Route::get('/pending-hr', [ApprovalController::class, 'indexHR']) // ✅ indexHR
+        ->name('hr.index');                                            // ✅ hr.index
+    Route::get('/hr/{loanRequest}/approve', [ApprovalController::class, 'showApproveFormHR'])
+        ->name('hr.approve.form');                                     // ✅ hr.approve.form
+    Route::post('/hr/{loanRequest}/approve', [ApprovalController::class, 'approveHR'])
+        ->name('hr.approve');                                          // ✅ hr.approve
+    Route::post('/hr/{loanRequest}/reject', [ApprovalController::class, 'rejectHR'])
+        ->name('hr.reject');                                           // ✅ hr.reject
 });
 
 /*
@@ -151,7 +137,7 @@ Route::middleware(['auth', 'role:admin_akuntansi'])
 | ADMIN ROUTES
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin_ga,kepala_departemen,admin_akuntansi'])
+Route::middleware(['auth', 'role:admin_ga,kepala_departemen,admin_hr']) // ✅ admin_hr
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -169,7 +155,7 @@ Route::middleware(['auth', 'role:admin_ga,kepala_departemen,admin_akuntansi'])
             ->name('units.check-name');
         Route::resource('units', UnitController::class);
 
-        // RETURNS — ✅ {return} sesuai controller method signature
+        // RETURNS
         Route::prefix('returns')->name('returns.')->group(function () {
             Route::get('/', [AdminReturnController::class, 'index'])
                 ->name('index');
@@ -199,7 +185,7 @@ Route::middleware(['auth', 'role:admin_ga,kepala_departemen,admin_akuntansi'])
     });
 
     // ==================== USERS (Multi-role) ====================
-    Route::middleware(['role:admin_ga,kepala_departemen,admin_akuntansi'])->group(function () {
+    Route::middleware(['role:admin_ga,kepala_departemen,admin_hr'])->group(function () { // ✅ admin_hr
         Route::post('users/check-email', [UserController::class, 'checkEmail'])
             ->name('users.check-email');
         Route::post('users/check-phone', [UserController::class, 'checkPhone'])
@@ -209,17 +195,20 @@ Route::middleware(['auth', 'role:admin_ga,kepala_departemen,admin_akuntansi'])
         Route::resource('users', UserController::class);
     });
 
-    // ==================== MONITORING (Admin Akuntansi) ====================
-    Route::middleware(['role:admin_ga'])
+    // ==================== MONITORING (Admin HR) ====================
+    Route::middleware(['role:admin_hr'])                               // ✅ admin_hr (bukan admin_ga)
         ->prefix('monitoring')
         ->name('monitoring.')
         ->group(function () {
 
-        Route::get('/expenses/export', [MonitoringController::class, 'exportExpenses'])
-            ->name('expenses.export');
-        Route::get('/expenses', [MonitoringController::class, 'expenses'])
-            ->name('expenses');
-    });
+        Route::get('/', [MonitoringController::class, 'index'])        // ✅ list history
+            ->name('index');
+        Route::get('/export-pdf', [MonitoringController::class, 'exportPdf'])
+            ->name('export-pdf');                                      // ✅ export PDF
+        Route::get('/{loanRequest}', [MonitoringController::class, 'show'])
+            ->name('show');                                            // ✅ detail record
+    
+            });
 
 });
 
