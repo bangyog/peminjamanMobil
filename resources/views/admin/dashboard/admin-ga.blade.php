@@ -86,7 +86,7 @@
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">Perlu Penugasan</p>
                     <p class="text-3xl font-extrabold text-purple-600 mt-1">{{ $stats['need_assignment'] }}</p>
                     <p class="text-xs {{ $stats['need_assignment'] > 0 ? 'text-purple-500 font-semibold animate-pulse' : 'text-gray-400' }} mt-1">
-                        {{ $stats['need_assignment'] > 0 ? '⚡ Belum ada kendaraan' : 'Semua terassign' }}
+                        {{ $stats['need_assignment'] > 0 ? '⚡ Belum ada kendaraan' : 'telah disetujui' }}
                     </p>
                 </div>
                 <div class="p-3 rounded-xl" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);">
@@ -147,7 +147,7 @@
             ['label'=>'Tersedia',    'key'=>'available',   'icon'=>'✅', 'bg'=>'#f0fdf4', 'border'=>'#86efac', 'text'=>'#15803d', 'bar'=>'#22c55e'],
             ['label'=>'Digunakan',   'key'=>'in_use',      'icon'=>'🔄', 'bg'=>'#eff6ff', 'border'=>'#93c5fd', 'text'=>'#1d4ed8', 'bar'=>'#3b82f6'],
             ['label'=>'Maintenance', 'key'=>'maintenance', 'icon'=>'🔧', 'bg'=>'#fffbeb', 'border'=>'#fde68a', 'text'=>'#92400e', 'bar'=>'#f59e0b'],
-            ['label'=>'Pensiunan',   'key'=>'retired',     'icon'=>'🚫', 'bg'=>'#f8fafc', 'border'=>'#e2e8f0', 'text'=>'#475569', 'bar'=>'#94a3b8'],
+            ['label'=>'Tidak Digunakan',   'key'=>'retired',     'icon'=>'🚫', 'bg'=>'#f8fafc', 'border'=>'#e2e8f0', 'text'=>'#475569', 'bar'=>'#94a3b8'],
         ];
         @endphp
 
